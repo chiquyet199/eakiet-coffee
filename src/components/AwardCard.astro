@@ -1,0 +1,32 @@
+---
+interface Props {
+  title: string;
+  year: number;
+  description: string;
+  image?: string;
+  organization?: string;
+}
+
+const { title, year, description, image, organization } = Astro.props;
+---
+
+<article class="overflow-hidden rounded-xl border border-coffee-200 bg-white p-6 shadow-sm">
+  {image && (
+    <div class="mb-4 aspect-video overflow-hidden rounded-lg bg-coffee-100">
+      <img
+        src={image}
+        alt={title}
+        class="h-full w-full object-cover"
+        loading="lazy"
+        width="400"
+        height="225"
+      />
+    </div>
+  )}
+  <div class="flex items-baseline justify-between gap-2">
+    <h3 class="font-semibold text-coffee-900">{title}</h3>
+    <span class="shrink-0 text-sm font-medium text-coffee-600">{year}</span>
+  </div>
+  {organization && <p class="mt-1 text-sm text-coffee-500">{organization}</p>}
+  <p class="mt-2 text-sm text-coffee-700">{description}</p>
+</article>

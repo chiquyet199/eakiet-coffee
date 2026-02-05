@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import NewsCard from '../../components/NewsCard.astro';
+import { getCollection } from 'astro:content';
+
+const news = await getCollection('news', (n) => n.data.published);
+const sorted = news.sort((a, b) => b.data.publishedDate.getTime() - a.data.publishedDate.getTime());
+---
+
+<BaseLayout title="Tin tức" description="Tin tức và cập nhật từ Eakiet Coffee.">
+  <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
+    <header class="mb-10">
+      <h1 class="text-3xl font-bold text-coffee-900 sm:text-4xl">Tin tức</h1>
+      <p class="mt-2 text-coffee-600">Cập nhật mới nhất từ Eakiet Coffee.</p>
+    </header>
+
+    {sorted.length > 0 ? (
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {sorted.map((article) => (
+          <NewsCard
+            title={article.data.title}
+            excerpt={article.data.excerpt}
+            image={article.data.featuredImage}
+            slug={article.slug}
+            date={article.data.publishedDate}
+          />
+        ))}
+      </div>
+    ) : (
+      <p class="rounded-xl border border-coffee-200 bg-coffee-50 p-8 text-center text-coffee-600">
+        Chưa có bài viết nào. Quản trị viên có thể thêm tin tức qua CMS.
+      </p>
+    )}
+  </div>
+</BaseLayout>

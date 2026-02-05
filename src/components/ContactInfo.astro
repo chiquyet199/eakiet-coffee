@@ -1,0 +1,25 @@
+---
+import { CONTACT } from '../utils/constants';
+---
+
+<div class="rounded-xl border border-coffee-200 bg-white p-6 shadow-sm">
+  <h2 class="text-lg font-semibold text-coffee-900">Thông tin liên hệ</h2>
+  <ul class="mt-4 space-y-3 text-coffee-700">
+    <li class="flex items-center gap-3">
+      <span class="text-coffee-500" aria-hidden="true">📞</span>
+      <a href={`tel:${CONTACT.phone.replace(/\s/g, '')}`} class="hover:text-coffee-900">{CONTACT.phone}</a>
+    </li>
+    <li class="flex items-center gap-3">
+      <span class="text-coffee-500" aria-hidden="true">✉️</span>
+      <a href={`mailto:${CONTACT.email}`} class="hover:text-coffee-900">{CONTACT.email}</a>
+    </li>
+    <li class="flex items-center gap-3">
+      <span class="text-coffee-500" aria-hidden="true">📍</span>
+      <span>{CONTACT.address}</span>
+    </li>
+    <li class="flex items-center gap-3">
+      <span class="text-coffee-500" aria-hidden="true">🕐</span>
+      <span>{CONTACT.hours}</span>
+    </li>
+  </ul>
+</div>

@@ -1,0 +1,40 @@
+---
+import { formatPrice } from '../utils/formatPrice';
+
+interface Props {
+  title: string;
+  price: number;
+  currency: string;
+  image: string;
+  slug: string;
+  category?: string;
+  description?: string;
+}
+
+const { title, price, currency, image, slug, category, description } = Astro.props;
+---
+
+<article class="group overflow-hidden rounded-xl border border-coffee-200 bg-white shadow-sm transition hover:shadow-md">
+  <a href={`/products/${slug}`} class="block">
+    <div class="aspect-[4/3] overflow-hidden bg-coffee-100">
+      <img
+        src={image}
+        alt={title}
+        class="h-full w-full object-cover transition group-hover:scale-105"
+        loading="lazy"
+        width="400"
+        height="300"
+      />
+    </div>
+    <div class="p-4">
+      {category && (
+        <p class="text-xs font-medium uppercase tracking-wider text-coffee-500">{category}</p>
+      )}
+      <h2 class="mt-1 font-semibold text-coffee-900 group-hover:text-coffee-600">{title}</h2>
+      {description && (
+        <p class="mt-1 line-clamp-2 text-sm text-coffee-600">{description}</p>
+      )}
+      <p class="mt-2 font-medium text-coffee-700">{formatPrice(price, currency)}</p>
+    </div>
+  </a>
+</article>

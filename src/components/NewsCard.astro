@@ -1,0 +1,33 @@
+---
+import { formatDate } from '../utils/formatDate';
+
+interface Props {
+  title: string;
+  excerpt: string;
+  image: string;
+  slug: string;
+  date: Date;
+}
+
+const { title, excerpt, image, slug, date } = Astro.props;
+---
+
+<article class="group overflow-hidden rounded-xl border border-coffee-200 bg-white shadow-sm transition hover:shadow-md">
+  <a href={`/news/${slug}`} class="block">
+    <div class="aspect-[16/10] overflow-hidden bg-coffee-100">
+      <img
+        src={image}
+        alt={title}
+        class="h-full w-full object-cover transition group-hover:scale-105"
+        loading="lazy"
+        width="400"
+        height="250"
+      />
+    </div>
+    <div class="p-4">
+      <time class="text-sm text-coffee-500" datetime={date.toISOString()}>{formatDate(date)}</time>
+      <h2 class="mt-1 font-semibold text-coffee-900 group-hover:text-coffee-600">{title}</h2>
+      <p class="mt-2 line-clamp-2 text-sm text-coffee-600">{excerpt}</p>
+    </div>
+  </a>
+</article>

@@ -1,0 +1,21 @@
+---
+interface Props {
+  href?: string;
+  text?: string;
+  variant?: 'primary' | 'secondary';
+}
+
+const { href = '/contact', text = 'Liên hệ ngay', variant = 'primary' } = Astro.props;
+---
+
+<a
+  href={href}
+  class:list={[
+    'inline-flex items-center justify-center rounded-lg px-6 py-3 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-coffee-500 focus:ring-offset-2',
+    variant === 'primary'
+      ? 'bg-coffee-700 text-white hover:bg-coffee-800'
+      : 'border-2 border-coffee-700 text-coffee-700 hover:bg-coffee-50',
+  ]}
+>
+  {text}
+</a>

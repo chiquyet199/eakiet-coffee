@@ -1,0 +1,31 @@
+---
+const path = Astro.url.pathname;
+const navItems = [
+  { href: '/', label: 'Trang chủ' },
+  { href: '/products', label: 'Sản phẩm' },
+  { href: '/news', label: 'Tin tức' },
+  { href: '/awards', label: 'Giải thưởng' },
+  { href: '/contact', label: 'Liên hệ' },
+];
+---
+
+<nav class="flex items-center gap-6" aria-label="Main navigation">
+  <ul class="flex flex-wrap items-center gap-4 sm:gap-6">
+    {navItems.map((item) => {
+      const isActive = path === item.href || (item.href !== '/' && path.startsWith(item.href));
+      return (
+        <li>
+          <a
+            href={item.href}
+            class:list={[
+              'text-sm font-medium transition hover:text-coffee-600',
+              isActive ? 'text-coffee-700 underline decoration-coffee-500 underline-offset-4' : 'text-coffee-800',
+            ]}
+          >
+            {item.label}
+          </a>
+        </li>
+      );
+    })}
+  </ul>
+</nav>

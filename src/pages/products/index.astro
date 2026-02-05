@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import { getCollection } from 'astro:content';
+
+const products = await getCollection('products', (p) => p.data.published);
+const sorted = products.sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout title="Sản phẩm" description="Danh mục sản phẩm cà phê Eakiet — chất lượng cao, thông tin và giá.">
+  <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
+    <header class="mb-10">
+      <h1 class="text-3xl font-bold text-coffee-900 sm:text-4xl">Sản phẩm</h1>
+      <p class="mt-2 text-coffee-600">Khám phá các dòng cà phê chất lượng của Eakiet Coffee.</p>
+    </header>
+
+    {sorted.length > 0 ? (
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {sorted.map((product) => (
+          <ProductCard
+            title={product.data.title}
+            price={product.data.price}
+            currency={product.data.currency}
+            image={product.data.mainImage}
+            slug={product.slug}
+            category={product.data.category}
+            description={product.data.description}
+          />
+        ))}
+      </div>
+    ) : (
+      <p class="rounded-xl border border-coffee-200 bg-coffee-50 p-8 text-center text-coffee-600">
+        Chưa có sản phẩm nào. Quản trị viên có thể thêm sản phẩm qua CMS.
+      </p>
+    )}
+  </div>
+</BaseLayout>

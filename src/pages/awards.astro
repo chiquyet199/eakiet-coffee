@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AwardCard from '../components/AwardCard.astro';
+import { getCollection } from 'astro:content';
+
+const awards = await getCollection('awards');
+const sorted = awards.sort((a, b) => (b.data.year ?? 0) - (a.data.year ?? 0));
+---
+
+<BaseLayout title="Giải thưởng" description="Giải thưởng và chứng nhận của Eakiet Coffee.">
+  <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
+    <header class="mb-10">
+      <h1 class="text-3xl font-bold text-coffee-900 sm:text-4xl">Giải thưởng</h1>
+      <p class="mt-2 text-coffee-600">Thành tựu và chứng nhận của chúng tôi.</p>
+    </header>
+
+    {sorted.length > 0 ? (
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {sorted.map((award) => (
+          <AwardCard
+            title={award.data.title}
+            year={award.data.year}
+            description={award.data.description}
+            image={award.data.image}
+            organization={award.data.organization}
+          />
+        ))}
+      </div>
+    ) : (
+      <p class="rounded-xl border border-coffee-200 bg-coffee-50 p-8 text-center text-coffee-600">
+        Chưa có giải thưởng nào. Quản trị viên có thể thêm qua CMS.
+      </p>
+    )}
+  </div>
+</BaseLayout>

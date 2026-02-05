@@ -1,0 +1,77 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
+
+locale: "vi"
+
+collections:
+  - name: products
+    label: Sản phẩm
+    folder: src/content/products
+    create: true
+    slug: "{{slug}}"
+    extension: md
+    format: frontmatter
+    frontmatter_delimiters: ["---", "---"]
+    fields:
+      - { label: Tiêu đề, name: title, widget: string }
+      - { label: Giá, name: price, widget: number }
+      - { label: Đơn vị tiền, name: currency, widget: string, default: "VND" }
+      - { label: Danh mục, name: category, widget: string, required: false }
+      - { label: Nổi bật, name: featured, widget: boolean, default: false }
+      - { label: Xuất bản, name: published, widget: boolean, default: true }
+      - { label: Ảnh chính, name: mainImage, widget: image }
+      - { label: Ảnh khác, name: images, widget: list, required: false, field: { label: Ảnh, name: image, widget: image } }
+      - { label: Mô tả ngắn, name: description, widget: text }
+      - label: Thông số
+        name: specifications
+        widget: object
+        required: false
+        fields:
+          - { label: Xuất xứ, name: origin, widget: string, required: false }
+          - { label: Mức rang, name: roastLevel, widget: string, required: false }
+          - { label: Quy trình, name: process, widget: string, required: false }
+          - { label: Độ cao, name: altitude, widget: string, required: false }
+          - { label: Hương vị, name: flavor, widget: string, required: false }
+      - { label: Thứ tự, name: order, widget: number, default: 0 }
+      - { label: Ngày tạo, name: createdAt, widget: datetime }
+      - { label: Ngày cập nhật, name: updatedAt, widget: datetime }
+      - { label: Nội dung (Markdown), name: body, widget: markdown, required: false }
+
+  - name: news
+    label: Tin tức
+    folder: src/content/news
+    create: true
+    slug: "{{slug}}"
+    extension: md
+    format: frontmatter
+    frontmatter_delimiters: ["---", "---"]
+    fields:
+      - { label: Tiêu đề, name: title, widget: string }
+      - { label: Trích dẫn, name: excerpt, widget: text }
+      - { label: Ảnh đại diện, name: featuredImage, widget: image }
+      - { label: Tác giả, name: author, widget: string, required: false }
+      - { label: Ngày xuất bản, name: publishedDate, widget: datetime }
+      - { label: Xuất bản, name: published, widget: boolean, default: true }
+      - { label: Thẻ, name: tags, widget: list, required: false, summary: "{{fields.tag}}", fields: [{ label: Thẻ, name: tag, widget: string }] }
+      - { label: Ngày tạo, name: createdAt, widget: datetime }
+      - { label: Ngày cập nhật, name: updatedAt, widget: datetime }
+      - { label: Nội dung, name: body, widget: markdown }
+
+  - name: awards
+    label: Giải thưởng
+    folder: src/content/awards
+    create: true
+    slug: "{{slug}}"
+    extension: json
+    format: json
+    fields:
+      - { label: Tiêu đề, name: title, widget: string }
+      - { label: Năm, name: year, widget: number }
+      - { label: Mô tả, name: description, widget: text }
+      - { label: Ảnh, name: image, widget: image, required: false }
+      - { label: Tổ chức, name: organization, widget: string, required: false }
+      - { label: Thứ tự, name: order, widget: number, default: 0 }

@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ContactInfo from '../components/ContactInfo.astro';
+---
+
+<BaseLayout title="Liên hệ" description="Liên hệ Eakiet Coffee — điện thoại, email, địa chỉ và giờ làm việc.">
+  <div class="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
+    <header class="mb-10">
+      <h1 class="text-3xl font-bold text-coffee-900 sm:text-4xl">Liên hệ</h1>
+      <p class="mt-2 text-coffee-600">Chúng tôi sẵn sàng hỗ trợ bạn. Liên hệ qua điện thoại hoặc email.</p>
+    </header>
+
+    <ContactInfo />
+
+    <div class="mt-10 rounded-xl border border-coffee-200 bg-coffee-50/50 p-6">
+      <h2 class="font-semibold text-coffee-900">Gửi yêu cầu</h2>
+      <p class="mt-2 text-sm text-coffee-600">
+        Bạn có thể gửi email trực tiếp tới <a href="mailto:contact@eakietcoffee.com.vn" class="font-medium text-coffee-700 underline hover:text-coffee-800">contact@eakietcoffee.com.vn</a> hoặc gọi điện để được tư vấn nhanh.
+      </p>
+    </div>
+  </div>
+</BaseLayout>

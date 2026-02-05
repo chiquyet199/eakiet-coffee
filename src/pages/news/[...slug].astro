@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { formatDate } from '../../utils/formatDate';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const news = await getCollection('news', (n) => n.data.published);
+  return news.map((article) => ({
+    params: { slug: article.slug },
+    props: { article },
+  }));
+}
+
+const { article } = Astro.props;
+const { data } = article;
+const { Content } = await article.render();
+---
+
+<BaseLayout title={data.title} description={data.excerpt} image={data.featuredImage}>
+  <article class="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
+    <header class="mb-8">
+      <h1 class="text-3xl font-bold text-coffee-900 sm:text-4xl">{data.title}</h1>
+      <div class="mt-4 flex flex-wrap items-center gap-4 text-sm text-coffee-600">
+        <time datetime={data.publishedDate.toISOString()}>{formatDate(data.publishedDate)}</time>
+        {data.author && <span>— {data.author}</span>}
+      </div>
+    </header>
+
+    <div class="overflow-hidden rounded-xl bg-coffee-100">
+      <img
+        src={data.featuredImage}
+        alt={data.title}
+        class="h-auto w-full object-cover"
+        width="800"
+        height="450"
+      />
+    </div>
+
+    <div class="mt-8 prose prose-coffee max-w-none">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>
