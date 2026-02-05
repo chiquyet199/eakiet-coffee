@@ -1,6 +1,6 @@
 ---
 title: Cà phê Arabica Premium
-price: 250000
+price: 500000
 currency: VND
 category: Arabica
 featured: true
@@ -12,7 +12,7 @@ specifications:
   origin: Việt Nam
   roastLevel: Medium
   process: Washed
-  altitude: "1200-1500m"
+  altitude: 1200-1500m
   flavor: Hoa quả, chocolate nhẹ
 order: 0
 createdAt: 2026-02-01T00:00:00.000Z
