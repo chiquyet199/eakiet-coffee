@@ -5,8 +5,9 @@ currency: VND
 category: Arabica
 featured: true
 published: true
-mainImage: https://placehold.co/600x600/f2ebe0/54392d?text=Arabica
-images: []
+mainImage: /images/uploads/what-is-moving-average.jpg
+images:
+  - /images/uploads/what-is-moving-average.jpg
 description: Cà phê Arabica cao cấp, hạt rang mới, hương thơm đặc trưng vùng cao.
 specifications:
   origin: Việt Nam
