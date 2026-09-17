@@ -8,7 +8,7 @@ published: true
 mainImage: /images/uploads/what-is-moving-average.jpg
 images:
   - /images/uploads/what-is-moving-average.jpg
-description: Cà phê Arabica cao cấp, hạt rang mới, hương thơm đặc trưng vùng cao.
+description: Cà phê Arabica cao cấp, hạt rang mới, hương thơm đặc trưng vùng cao. 123
 specifications:
   origin: Việt Nam
   roastLevel: Medium
