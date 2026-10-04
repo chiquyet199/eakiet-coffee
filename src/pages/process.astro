@@ -1,0 +1,80 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CallToAction from '../components/CallToAction.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import { PROCESS_METHODS } from '../utils/taxonomy';
+
+// TODO: replace with the HTX's own figures and photos.
+const methods: Record<keyof typeof PROCESS_METHODS, string> = {
+  natural: 'Phơi nguyên trái trên giàn cách đất, giữ trọn vị ngọt tự nhiên và hương trái cây.',
+  honey: 'Bóc vỏ, giữ lại lớp nhớt khi phơi — cân bằng giữa độ ngọt và độ sạch vị.',
+  washed: 'Lên men và rửa sạch lớp nhớt trước khi phơi, cho vị trong trẻo và độ chua thanh.',
+};
+
+const sections = [
+  {
+    id: 'canh-tac',
+    eyebrow: 'Bước 1',
+    title: 'Kỹ thuật canh tác',
+    points: ['Tỷ lệ hái chín trên 95%', 'Hướng tới canh tác hữu cơ, giảm phân thuốc hóa học', 'Ghi chép nhật ký canh tác theo mã số vùng trồng'],
+  },
+  {
+    id: 'kiem-soat',
+    eyebrow: 'Bước 3',
+    title: 'Kiểm soát chất lượng (Cupping Lab)',
+    points: ['Sàng lọc hạt lỗi theo kích thước và tỷ trọng', 'Máy bắn màu tự động loại bỏ hạt đen, hạt hư', 'Cupping kiểm tra hương vị từng mẻ rang'],
+  },
+];
+---
+
+<BaseLayout title="Quy trình & Chất lượng" description="Quy trình canh tác, sơ chế nhà màng và kiểm soát chất lượng của HTX Công Bằng Ea Kiết.">
+  <section class="bg-coffee-900 text-white">
+    <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+      <p class="text-sm font-semibold uppercase tracking-[0.2em] text-ripe-300">Quy trình & Chất lượng</p>
+      <h1 class="mt-3 max-w-3xl text-3xl sm:text-4xl lg:text-5xl">Minh bạch năng lực chế biến sâu</h1>
+    </div>
+  </section>
+
+  <section id={sections[0].id} class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+    <SectionHeading eyebrow={sections[0].eyebrow} title={sections[0].title} />
+    <ul class="mt-8 grid gap-4 md:grid-cols-3">
+      {sections[0].points.map((p) => (
+        <li class="flex gap-3 rounded-xl border border-coffee-200 bg-white p-5 text-coffee-800">
+          <span class="text-leaf-700" aria-hidden="true">✓</span>{p}
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section id="so-che" class="border-y border-coffee-200 bg-white">
+    <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+      <SectionHeading
+        eyebrow="Bước 2"
+        title="Sơ chế & Phơi sấy"
+        subtitle="Hệ thống giàn phơi nhà màng cách đất giúp hạt khô đều, sạch, không lẫn tạp chất."
+      />
+      <div class="mt-10 grid gap-6 md:grid-cols-3">
+        {(Object.keys(methods) as (keyof typeof methods)[]).map((key) => (
+          <div class="rounded-xl border border-coffee-200 bg-coffee-50 p-6">
+            <h3 class="font-serif text-xl text-leaf-700">{PROCESS_METHODS[key]}</h3>
+            <p class="mt-2 text-sm text-coffee-700">{methods[key]}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id={sections[1].id} class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+    <SectionHeading eyebrow={sections[1].eyebrow} title={sections[1].title} />
+    <ul class="mt-8 grid gap-4 md:grid-cols-3">
+      {sections[1].points.map((p) => (
+        <li class="flex gap-3 rounded-xl border border-coffee-200 bg-white p-5 text-coffee-800">
+          <span class="text-leaf-700" aria-hidden="true">✓</span>{p}
+        </li>
+      ))}
+    </ul>
+    <div class="mt-12 text-center">
+      <CallToAction href="/contact?type=sample#lien-he" text="Đăng ký nhận mẫu thử" />
+    </div>
+  </section>
+</BaseLayout>

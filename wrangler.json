@@ -1,7 +1,9 @@
 {
 	"name": "eakiet-coffee",
 	"compatibility_date": "2025-10-08",
-	"compatibility_flags": ["nodejs_compat"],
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
 	"main": "./dist/_worker.js/index.js",
 	"assets": {
 		"directory": "./dist",
@@ -10,5 +12,23 @@
 	"observability": {
 		"enabled": true
 	},
-	"upload_source_maps": true
+	"upload_source_maps": true,
+	"d1_databases": [
+		{
+			"binding": "LEADS_DB",
+			"database_name": "eakiet-leads",
+			"database_id": "ec14b813-5216-402b-94cc-1672aac6445f",
+			"migrations_dir": "migrations"
+		}
+	],
+	"vars": {
+		"LEAD_EMAIL_FROM": "website@eakietcoffee.com.vn",
+		"ACCESS_TEAM_DOMAIN": "",
+		"ACCESS_AUD": ""
+	},
+	"send_email": [
+		{
+			"name": "LEAD_EMAIL"
+		}
+	]
 }

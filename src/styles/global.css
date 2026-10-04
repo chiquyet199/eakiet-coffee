@@ -5,12 +5,48 @@
 @layer base {
   html {
     @apply scroll-smooth;
+    /* Keep anchor targets clear of the sticky header. */
+    scroll-padding-top: 5rem;
   }
   body {
-    @apply bg-coffee-50 text-coffee-900 antialiased;
+    @apply bg-coffee-50 font-sans text-coffee-900 antialiased;
     font-size: 16px;
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold tracking-tight;
+    @apply font-serif font-bold tracking-tight;
+  }
+}
+
+@layer components {
+  .form-input {
+    @apply w-full rounded-lg border border-coffee-200 bg-white px-3 py-2.5 text-sm text-coffee-900 placeholder:text-coffee-400 focus:border-leaf-600 focus:outline-none focus:ring-2 focus:ring-leaf-600/20;
+  }
+  /* Markdown bodies (no typography plugin installed). */
+  .prose > * + * {
+    @apply mt-4;
+  }
+  .prose h2 {
+    @apply mt-8 text-2xl text-coffee-900;
+  }
+  .prose h3 {
+    @apply mt-6 text-xl text-coffee-900;
+  }
+  .prose a {
+    @apply font-medium text-ripe-600 underline;
+  }
+  .prose ul {
+    @apply list-disc pl-6;
+  }
+  .prose ol {
+    @apply list-decimal pl-6;
+  }
+  .prose img {
+    @apply rounded-xl;
+  }
+  .prose blockquote {
+    @apply border-l-4 border-leaf-700 pl-4 italic text-coffee-700;
+  }
+  .form-label {
+    @apply mb-1 block text-sm font-medium text-coffee-800;
   }
 }

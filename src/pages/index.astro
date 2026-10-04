@@ -1,94 +1,206 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProductCard from '../components/ProductCard.astro';
-import NewsCard from '../components/NewsCard.astro';
 import CallToAction from '../components/CallToAction.astro';
-import { getCollection } from 'astro:content';
+import Certifications from '../components/Certifications.astro';
+import LeadForm from '../components/LeadForm.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import { getCollection, getEntry } from 'astro:content';
+import { HERO_VIDEO_URL, LEGAL, SITE_DESCRIPTION } from '../utils/constants';
+import { PRODUCT_LINES } from '../utils/taxonomy';
 
-const products = await getCollection('products', (p) => p.data.published);
-const featuredProducts = products
-  .filter((p) => p.data.featured)
-  .sort((a, b) => a.data.order - b.data.order)
-  .slice(0, 6);
-const latestProducts = products
-  .sort((a, b) => (b.data.updatedAt?.getTime() ?? 0) - (a.data.updatedAt?.getTime() ?? 0))
-  .slice(0, 6);
-const displayProducts = featuredProducts.length >= 3 ? featuredProducts : latestProducts;
+const home = (await getEntry('settings', 'home'))!.data;
 
-const news = await getCollection('news', (n) => n.data.published);
-const latestNews = news
-  .sort((a, b) => b.data.publishedDate.getTime() - a.data.publishedDate.getTime())
-  .slice(0, 3);
+const products = (await getCollection('products', (p) => p.data.published)).sort(
+  (a, b) => Number(b.data.featured) - Number(a.data.featured) || a.data.order - b.data.order
+);
+const tabs = (Object.keys(PRODUCT_LINES) as (keyof typeof PRODUCT_LINES)[]).map((line) => ({
+  line,
+  label: PRODUCT_LINES[line],
+  products: products.filter((p) => p.data.productLine === line).slice(0, 6),
+}));
+
+const hasCertifications = (await getCollection('awards', (a) => a.data.kind === 'certification')).length > 0;
+
+// Simple line icons for the metrics bar, cycled by position.
+const metricIcons = [
+  'M9 20l-5.4-2.7A1 1 0 013 16.4V5.6a1 1 0 011.4-.9L9 7m0 13l6-3m-6 3V7m6 10l4.6 2.3a1 1 0 001.4-.9V7.6a1 1 0 00-.6-.9L15 4m0 13V4m0 0L9 7',
+  'M17 20h5v-2a3 3 0 00-5.4-1.8M17 20H7m10 0v-2c0-.7-.1-1.3-.4-1.8M7 20H2v-2a3 3 0 015.4-1.8M7 20v-2c0-.7.1-1.3.4-1.8m0 0a5 5 0 019.2 0M15 7a3 3 0 11-6 0 3 3 0 016 0z',
+  'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4',
+  'M5 13l4 4L19 7',
+];
 ---
 
-<BaseLayout title="" description="Eakiet Coffee — Cà phê gia đình. Sản phẩm chất lượng cao, thông tin và liên hệ.">
-  <section class="relative overflow-hidden bg-gradient-to-b from-coffee-800 to-coffee-900 px-4 py-20 text-white sm:px-6 sm:py-28 lg:px-8">
-    <div class="mx-auto max-w-4xl text-center">
-      <h1 class="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">Eakiet Coffee</h1>
-      <p class="mt-4 text-lg text-coffee-200 sm:text-xl">
-        Cà phê gia đình — Chất lượng cao, thông tin rõ ràng. Khám phá sản phẩm và liên hệ với chúng tôi.
-      </p>
-      <div class="mt-8">
-        <CallToAction href="/products" text="Xem sản phẩm" variant="secondary" />
-        <span class="mx-3 inline-block text-coffee-300">hoặc</span>
-        <CallToAction href="/contact" text="Liên hệ" variant="primary" />
+<BaseLayout title="" description={SITE_DESCRIPTION} image={home.heroPoster || undefined}>
+  <!-- Block 1: Hero -->
+  <section class="relative isolate overflow-hidden bg-coffee-900 text-white">
+    <video
+      class="absolute inset-0 -z-10 h-full w-full object-cover"
+      src={HERO_VIDEO_URL}
+      poster={home.heroPoster || undefined}
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="metadata"
+      aria-hidden="true"
+    ></video>
+    <div class="absolute inset-0 -z-10 bg-gradient-to-r from-coffee-950/90 via-coffee-900/70 to-coffee-900/30"></div>
+    <div class="mx-auto max-w-6xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8 lg:py-40">
+      <div class="max-w-2xl">
+        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-ripe-300">Hợp tác xã Nông nghiệp – Dịch vụ</p>
+        <h1 class="mt-3 text-4xl leading-tight sm:text-5xl lg:text-6xl">{home.heroSlogan}</h1>
+        {home.heroSubtitle && <p class="mt-5 text-lg text-coffee-100">{home.heroSubtitle}</p>}
+        <div class="mt-8 flex flex-wrap gap-4">
+          <CallToAction href="#bao-gia" text="Yêu cầu báo giá sỉ" variant="primary" />
+          <CallToAction href="/products" text="Khám phá sản phẩm" variant="light" />
+        </div>
       </div>
     </div>
   </section>
 
-  {displayProducts.length > 0 && (
-    <section class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
-      <h2 class="text-2xl font-bold text-coffee-900 sm:text-3xl">Sản phẩm nổi bật</h2>
-      <p class="mt-2 text-coffee-600">Khám phá các dòng cà phê chất lượng của chúng tôi.</p>
-      <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {displayProducts.map((product) => (
-          <ProductCard
-            title={product.data.title}
-            price={product.data.price}
-            currency={product.data.currency}
-            image={product.data.mainImage}
-            slug={product.slug}
-            category={product.data.category}
-            description={product.data.description}
-          />
+  <!-- Block 2: Key metrics -->
+  {home.metrics.length > 0 && (
+    <section class="bg-leaf-700 text-white">
+      <ul class="mx-auto grid max-w-6xl grid-cols-2 gap-6 px-4 py-8 sm:px-6 lg:grid-cols-4 lg:px-8">
+        {home.metrics.map((metric, i) => (
+          <li class="flex items-center gap-3">
+            <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/10">
+              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d={metricIcons[i % metricIcons.length]} />
+              </svg>
+            </span>
+            <span>
+              <span class="block font-serif text-xl font-bold sm:text-2xl">{metric.value}</span>
+              <span class="block text-sm text-leaf-100">{metric.label}</span>
+            </span>
+          </li>
         ))}
-      </div>
-      <div class="mt-10 text-center">
-        <CallToAction href="/products" text="Xem tất cả sản phẩm" variant="secondary" />
-      </div>
+      </ul>
     </section>
   )}
 
-  {latestNews.length > 0 && (
-    <section class="border-t border-coffee-200 bg-coffee-100/30">
-      <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
-        <h2 class="text-2xl font-bold text-coffee-900 sm:text-3xl">Tin tức mới</h2>
-        <p class="mt-2 text-coffee-600">Cập nhật từ Eakiet Coffee.</p>
-        <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {latestNews.map((article) => (
-            <NewsCard
-              title={article.data.title}
-              excerpt={article.data.excerpt}
-              image={article.data.featuredImage}
-              slug={article.slug}
-              date={article.data.publishedDate}
-            />
+  <!-- Block 3: About preview -->
+  <section class="mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:px-8 lg:py-20">
+    <div>
+      <SectionHeading eyebrow="Về chúng tôi" title="Liên kết nông hộ, nâng tầm hạt cà phê Việt" />
+      {home.aboutPreview && <p class="mt-5 leading-relaxed text-coffee-700">{home.aboutPreview}</p>}
+      <a href="/about" class="mt-6 inline-flex items-center gap-1 font-semibold text-ripe-600 hover:text-ripe-700">
+        Về chúng tôi <span aria-hidden="true">→</span>
+      </a>
+    </div>
+    <div class="aspect-[4/3] overflow-hidden rounded-2xl border border-coffee-200 bg-coffee-100 shadow-sm">
+      <iframe
+        title="Bản đồ vùng trồng"
+        src={`https://maps.google.com/maps?q=${encodeURIComponent(LEGAL.mapQuery)}&z=11&output=embed`}
+        class="h-full w-full"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+  </section>
+
+  <!-- Block 4: Featured products by line -->
+  <section class="border-y border-coffee-200 bg-white">
+    <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+      <SectionHeading eyebrow="Sản phẩm" title="Danh mục sản phẩm chủ lực" center />
+      <div class="mt-8 flex justify-center" role="tablist" aria-label="Dòng sản phẩm">
+        <div class="inline-flex flex-wrap justify-center gap-2 rounded-xl bg-coffee-100 p-1.5">
+          {tabs.map((tab, i) => (
+            <button
+              type="button"
+              role="tab"
+              id={`tab-${tab.line}`}
+              aria-controls={`panel-${tab.line}`}
+              aria-selected={i === 0 ? 'true' : 'false'}
+              class="product-tab rounded-lg px-4 py-2 text-sm font-semibold text-coffee-700 transition aria-selected:bg-coffee-900 aria-selected:text-white"
+            >
+              {tab.label}
+            </button>
           ))}
         </div>
-        <div class="mt-10 text-center">
-          <CallToAction href="/news" text="Xem tất cả tin tức" variant="secondary" />
+      </div>
+      {tabs.map((tab, i) => (
+        <div id={`panel-${tab.line}`} role="tabpanel" aria-labelledby={`tab-${tab.line}`} class:list={['mt-10', i !== 0 && 'hidden']}>
+          {tab.products.length > 0 ? (
+            <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {tab.products.map((product) => <ProductCard product={product} />)}
+            </div>
+          ) : (
+            <p class="rounded-xl border border-dashed border-coffee-300 p-8 text-center text-coffee-600">
+              Sản phẩm đang được cập nhật. <a href="/contact" class="font-semibold text-ripe-600 underline">Liên hệ</a> để được tư vấn.
+            </p>
+          )}
+          <div class="mt-10 text-center">
+            <CallToAction href={`/products?line=${tab.line}`} text={`Xem tất cả ${tab.label.toLowerCase()}`} variant="secondary" />
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Block 5: Process summary -->
+  {home.processSteps.length > 0 && (
+    <section class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+      <SectionHeading eyebrow="Quy trình & Chất lượng" title="Từ vườn đến tách cà phê" center />
+      <ol class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {home.processSteps.map((step, i) => (
+          <li class="relative rounded-xl border border-coffee-200 bg-white p-6 shadow-sm">
+            <span class="flex h-10 w-10 items-center justify-center rounded-full bg-leaf-700 font-serif font-bold text-white">{i + 1}</span>
+            <h3 class="mt-4 font-sans text-lg font-semibold text-coffee-900">{step.title}</h3>
+            {step.description && <p class="mt-2 text-sm text-coffee-600">{step.description}</p>}
+            {i < home.processSteps.length - 1 && (
+              <span class="absolute -right-5 top-1/2 hidden -translate-y-1/2 text-2xl text-ripe-500 lg:block" aria-hidden="true">➔</span>
+            )}
+          </li>
+        ))}
+      </ol>
+      <div class="mt-10 text-center">
+        <a href="/process" class="inline-flex items-center gap-1 font-semibold text-ripe-600 hover:text-ripe-700">
+          Tìm hiểu quy trình <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </section>
+  )}
+
+  <!-- Block 6: Certifications -->
+  {hasCertifications && (
+    <section class="border-y border-coffee-200 bg-white">
+      <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
+        <SectionHeading eyebrow="Chứng nhận" title="Uy tín được công nhận" center />
+        <div class="mt-10">
+          <Certifications />
         </div>
       </div>
     </section>
   )}
 
-  <section class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
-    <div class="rounded-2xl bg-coffee-800 px-6 py-12 text-center text-white sm:py-16">
-      <h2 class="text-2xl font-bold sm:text-3xl">Bạn cần tư vấn hoặc đặt hàng?</h2>
-      <p class="mt-3 text-coffee-200">Liên hệ với chúng tôi qua điện thoại hoặc email.</p>
-      <div class="mt-8">
-        <CallToAction href="/contact" text="Liên hệ ngay" variant="secondary" />
+  <!-- Block 7: Wholesale quote form -->
+  <section id="bao-gia" class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+    <div class="grid gap-10 rounded-2xl bg-coffee-900 px-6 py-10 sm:px-10 lg:grid-cols-5 lg:py-14">
+      <div class="lg:col-span-2">
+        <SectionHeading
+          eyebrow="Khách hàng doanh nghiệp"
+          title="Đăng ký nhận báo giá sỉ"
+          subtitle="Để lại thông tin, Ban quản lý HTX sẽ liên hệ tư vấn và gửi báo giá phù hợp với nhu cầu của bạn."
+          dark
+        />
+      </div>
+      <div class="lg:col-span-3">
+        <LeadForm variant="quote" dark />
       </div>
     </div>
   </section>
 </BaseLayout>
+
+<script>
+  const tabs = document.querySelectorAll<HTMLButtonElement>('.product-tab');
+  for (const tab of tabs) {
+    tab.addEventListener('click', () => {
+      for (const other of tabs) {
+        const selected = other === tab;
+        other.setAttribute('aria-selected', String(selected));
+        document.getElementById(other.getAttribute('aria-controls')!)?.classList.toggle('hidden', !selected);
+      }
+    });
+  }
+</script>

@@ -1,0 +1,13 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CallToAction from '../components/CallToAction.astro';
+---
+
+<!-- Shown after a form is submitted without JavaScript (the endpoint redirects here). -->
+<BaseLayout title="Cảm ơn" description="Yêu cầu của bạn đã được gửi." noindex>
+  <div class="mx-auto max-w-xl px-4 py-24 text-center sm:px-6">
+    <h1 class="text-3xl text-coffee-900">Cảm ơn bạn!</h1>
+    <p class="mt-4 text-coffee-700">Yêu cầu đã được gửi. Ban quản lý HTX sẽ liên hệ lại trong thời gian sớm nhất.</p>
+    <div class="mt-8"><CallToAction href="/" text="Về trang chủ" variant="secondary" /></div>
+  </div>
+</BaseLayout>

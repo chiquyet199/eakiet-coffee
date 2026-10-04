@@ -1,0 +1,128 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getAccessUser } from '../../utils/access';
+import { LEAD_TYPES, type LeadType } from '../../utils/leads';
+
+export const prerender = false;
+
+// Protected by Cloudflare Access in production (see CLAUDE.md); open in `astro dev` only.
+const env = Astro.locals.runtime.env;
+const user = import.meta.env.DEV ? 'dev' : await getAccessUser(Astro.request, env);
+if (!user) {
+  return new Response('Forbidden', { status: 403 });
+}
+Astro.response.headers.set('Cache-Control', 'private, no-store');
+
+interface Lead {
+  id: number;
+  created_at: string;
+  type: LeadType;
+  name: string;
+  phone: string;
+  email: string | null;
+  need: string | null;
+  quantity: string | null;
+  product: string | null;
+  message: string | null;
+  page: string | null;
+}
+
+const PAGE_SIZE = 50;
+const typeFilter = Astro.url.searchParams.get('type');
+const type = typeFilter && typeFilter in LEAD_TYPES ? (typeFilter as LeadType) : null;
+const page = Math.max(1, Number(Astro.url.searchParams.get('page')) || 1);
+
+const where = type ? 'WHERE type = ?' : '';
+const binds = type ? [type] : [];
+const { results: leads } = await env.LEADS_DB.prepare(
+  `SELECT id, created_at, type, name, phone, email, need, quantity, product, message, page FROM leads ${where} ORDER BY id DESC LIMIT ? OFFSET ?`
+)
+  .bind(...binds, PAGE_SIZE + 1, (page - 1) * PAGE_SIZE)
+  .all<Lead>();
+const hasNext = leads.length > PAGE_SIZE;
+const rows = leads.slice(0, PAGE_SIZE);
+const total = (await env.LEADS_DB.prepare(`SELECT COUNT(*) AS n FROM leads ${where}`).bind(...binds).first<{ n: number }>())?.n ?? 0;
+
+// D1 stores UTC ("YYYY-MM-DD HH:MM:SS"); show Vietnam time.
+const formatTime = (utc: string) =>
+  new Intl.DateTimeFormat('vi-VN', { dateStyle: 'short', timeStyle: 'short', timeZone: 'Asia/Ho_Chi_Minh' }).format(
+    new Date(`${utc.replace(' ', 'T')}Z`)
+  );
+const zaloLink = (phone: string) => {
+  const digits = phone.replace(/\D/g, '');
+  return `https://zalo.me/${digits.startsWith('0') ? `84${digits.slice(1)}` : digits}`;
+};
+const link = (params: Record<string, string | number | null>) => {
+  const q = new URLSearchParams();
+  for (const [k, v] of Object.entries(params)) if (v) q.set(k, String(v));
+  const s = q.toString();
+  return s ? `?${s}` : '?';
+};
+---
+
+<BaseLayout title="Yêu cầu liên hệ" noindex>
+  <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+    <header class="flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <h1 class="text-2xl text-coffee-900 sm:text-3xl">Yêu cầu liên hệ</h1>
+        <p class="mt-1 text-sm text-coffee-600">{total} yêu cầu{type && ` · ${LEAD_TYPES[type]}`} · đăng nhập: {user}</p>
+      </div>
+      <nav class="flex flex-wrap gap-2 text-sm" aria-label="Lọc theo loại">
+        <a href={link({})} class:list={['rounded-full border px-3 py-1', !type ? 'border-coffee-900 bg-coffee-900 text-white' : 'border-coffee-300']}>Tất cả</a>
+        {Object.entries(LEAD_TYPES).map(([value, label]) => (
+          <a href={link({ type: value })} class:list={['rounded-full border px-3 py-1', type === value ? 'border-coffee-900 bg-coffee-900 text-white' : 'border-coffee-300']}>{label}</a>
+        ))}
+      </nav>
+    </header>
+
+    {rows.length === 0 ? (
+      <p class="mt-8 rounded-xl border border-dashed border-coffee-300 p-8 text-center text-coffee-600">Chưa có yêu cầu nào.</p>
+    ) : (
+      <div class="mt-6 overflow-x-auto rounded-xl border border-coffee-200 bg-white">
+        <table class="w-full min-w-[56rem] text-left text-sm">
+          <thead class="bg-coffee-100 text-xs uppercase tracking-wider text-coffee-700">
+            <tr>
+              <th class="px-3 py-2.5">Thời gian</th>
+              <th class="px-3 py-2.5">Loại</th>
+              <th class="px-3 py-2.5">Khách hàng</th>
+              <th class="px-3 py-2.5">Nhu cầu</th>
+              <th class="px-3 py-2.5">Nội dung</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-coffee-100 align-top">
+            {rows.map((lead) => (
+              <tr>
+                <td class="whitespace-nowrap px-3 py-3 text-coffee-600">{formatTime(lead.created_at)}</td>
+                <td class="px-3 py-3"><span class="whitespace-nowrap rounded-full bg-leaf-50 px-2 py-0.5 text-xs font-medium text-leaf-700">{LEAD_TYPES[lead.type] ?? lead.type}</span></td>
+                <td class="px-3 py-3">
+                  <p class="font-semibold text-coffee-900">{lead.name}</p>
+                  <p class="mt-0.5 flex flex-wrap gap-x-3">
+                    <a href={`tel:${lead.phone.replace(/[^\d+]/g, '')}`} class="text-ripe-600 hover:underline">{lead.phone}</a>
+                    <a href={zaloLink(lead.phone)} target="_blank" rel="noopener noreferrer" class="text-[#0068ff] hover:underline">Zalo</a>
+                  </p>
+                  {lead.email && <a href={`mailto:${lead.email}`} class="text-coffee-600 hover:underline">{lead.email}</a>}
+                </td>
+                <td class="px-3 py-3 text-coffee-800">
+                  {lead.need && <p>{lead.need}</p>}
+                  {lead.quantity && <p class="text-coffee-600">SL: {lead.quantity}</p>}
+                  {lead.product && <p class="text-coffee-600">SP: {lead.product}</p>}
+                </td>
+                <td class="max-w-md px-3 py-3 text-coffee-800">
+                  {lead.message && <p class="whitespace-pre-line">{lead.message}</p>}
+                  {lead.page && <p class="mt-1 text-xs text-coffee-400">Từ trang: {lead.page}</p>}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )}
+
+    {(page > 1 || hasNext) && (
+      <nav class="mt-6 flex justify-between text-sm font-semibold" aria-label="Phân trang">
+        {page > 1 ? <a href={link({ type, page: page - 1 })} class="text-ripe-600">← Mới hơn</a> : <span></span>}
+        {hasNext && <a href={link({ type, page: page + 1 })} class="text-ripe-600">Cũ hơn →</a>}
+      </nav>
+    )}
+  </div>
+</BaseLayout>

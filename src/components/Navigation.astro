@@ -2,30 +2,82 @@
 const path = Astro.url.pathname;
 const navItems = [
   { href: '/', label: 'Trang chủ' },
+  { href: '/about', label: 'Về chúng tôi' },
   { href: '/products', label: 'Sản phẩm' },
+  { href: '/process', label: 'Quy trình & Chất lượng' },
   { href: '/news', label: 'Tin tức' },
-  { href: '/awards', label: 'Giải thưởng' },
   { href: '/contact', label: 'Liên hệ' },
 ];
+const isActive = (href: string) => path === href || (href !== '/' && path.startsWith(href));
 ---
 
-<nav class="flex items-center gap-6" aria-label="Main navigation">
-  <ul class="flex flex-wrap items-center gap-4 sm:gap-6">
-    {navItems.map((item) => {
-      const isActive = path === item.href || (item.href !== '/' && path.startsWith(item.href));
-      return (
-        <li>
-          <a
-            href={item.href}
-            class:list={[
-              'text-sm font-medium transition hover:text-coffee-600',
-              isActive ? 'text-coffee-700 underline decoration-coffee-500 underline-offset-4' : 'text-coffee-800',
-            ]}
-          >
-            {item.label}
-          </a>
-        </li>
-      );
-    })}
+<nav aria-label="Main navigation" class="flex items-center gap-3">
+  <ul class="hidden items-center gap-5 lg:flex xl:gap-7">
+    {navItems.map((item) => (
+      <li>
+        <a
+          href={item.href}
+          class:list={[
+            'text-sm font-medium transition hover:text-ripe-600',
+            isActive(item.href) ? 'text-ripe-600' : 'text-coffee-900',
+          ]}
+          aria-current={isActive(item.href) ? 'page' : undefined}
+        >
+          {item.label}
+        </a>
+      </li>
+    ))}
   </ul>
+
+  <a
+    href="/contact?type=wholesale#lien-he"
+    class="hidden rounded-lg bg-ripe-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-ripe-600 sm:inline-flex"
+  >
+    Báo giá
+  </a>
+
+  <button
+    type="button"
+    id="nav-toggle"
+    class="inline-flex h-10 w-10 items-center justify-center rounded-lg text-coffee-900 hover:bg-coffee-100 lg:hidden"
+    aria-controls="mobile-menu"
+    aria-expanded="false"
+    aria-label="Mở menu"
+  >
+    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16" />
+    </svg>
+  </button>
 </nav>
+
+<div id="mobile-menu" class="absolute inset-x-0 top-full hidden border-b border-t border-coffee-200 bg-coffee-50 shadow-lg lg:hidden">
+  <ul class="mx-auto max-w-6xl space-y-1 px-4 py-3 sm:px-6">
+    {navItems.map((item) => (
+      <li>
+        <a
+          href={item.href}
+          class:list={[
+            'block rounded-lg px-3 py-2.5 text-base font-medium',
+            isActive(item.href) ? 'bg-coffee-100 text-ripe-600' : 'text-coffee-900 hover:bg-coffee-100',
+          ]}
+        >
+          {item.label}
+        </a>
+      </li>
+    ))}
+    <li class="pt-2 sm:hidden">
+      <a href="/contact?type=wholesale#lien-he" class="block rounded-lg bg-ripe-500 px-3 py-2.5 text-center font-semibold text-white">
+        Yêu cầu báo giá
+      </a>
+    </li>
+  </ul>
+</div>
+
+<script>
+  const toggle = document.getElementById('nav-toggle');
+  const menu = document.getElementById('mobile-menu');
+  toggle?.addEventListener('click', () => {
+    const open = menu?.classList.toggle('hidden') === false;
+    toggle.setAttribute('aria-expanded', String(open));
+  });
+</script>

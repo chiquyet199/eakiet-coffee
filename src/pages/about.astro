@@ -1,20 +1,103 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import AwardCard from '../components/AwardCard.astro';
+import CallToAction from '../components/CallToAction.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import { getCollection } from 'astro:content';
+import { LEGAL, SITE_LEGAL_NAME } from '../utils/constants';
+import { AWARD_KINDS } from '../utils/taxonomy';
+
+const awards = (await getCollection('awards')).sort((a, b) => a.data.order - b.data.order);
+// Legal documents first, then certifications, then awards.
+const groups = (['legal', 'certification', 'award'] as const)
+  .map((kind) => ({ kind, label: AWARD_KINDS[kind], items: awards.filter((a) => a.data.kind === kind) }))
+  .filter((g) => g.items.length > 0);
+
+// TODO: replace the copy below with the HTX's own story, org chart and photos.
+const linkagePolicies = [
+  { title: 'Hỗ trợ kỹ thuật', text: 'Tập huấn canh tác bền vững, thu hái chín và sơ chế đúng chuẩn cho nông hộ thành viên.' },
+  { title: 'Bao tiêu sản phẩm', text: 'Cam kết thu mua ổn định với giá minh bạch, giúp nông hộ yên tâm đầu tư chất lượng.' },
+  { title: 'Liên kết chuỗi giá trị', text: 'Kết nối nông hộ với xưởng rang, đối tác xuất khẩu và thị trường tiêu dùng.' },
+];
 ---
 
-<BaseLayout title="Về chúng tôi" description="Giới thiệu Eakiet Coffee — cà phê gia đình, chất lượng cao.">
-  <div class="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
-    <h1 class="text-3xl font-bold text-coffee-900 sm:text-4xl">Về chúng tôi</h1>
-    <p class="mt-6 text-coffee-700">
-      Eakiet Coffee là thương hiệu cà phê gia đình, tập trung vào chất lượng sản phẩm và thông tin minh bạch cho khách hàng.
-    </p>
-    <p class="mt-4 text-coffee-700">
-      Chúng tôi cung cấp các sản phẩm cà phê được chọn lọc, phù hợp cho quán cà phê, nhà bán lẻ và đối tác phân phối. Liên hệ với chúng tôi để biết thêm thông tin và đặt hàng.
-    </p>
-    <div class="mt-10">
-      <a href="/contact" class="inline-flex items-center justify-center rounded-lg bg-coffee-700 px-6 py-3 text-sm font-semibold text-white transition hover:bg-coffee-800">
-        Liên hệ
-      </a>
+<BaseLayout title="Về chúng tôi" description={`Giới thiệu ${SITE_LEGAL_NAME} — sứ mệnh, mô hình liên kết, vùng nguyên liệu và hồ sơ pháp lý.`}>
+  <section class="bg-coffee-900 text-white">
+    <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+      <p class="text-sm font-semibold uppercase tracking-[0.2em] text-ripe-300">Về chúng tôi</p>
+      <h1 class="mt-3 max-w-3xl text-3xl sm:text-4xl lg:text-5xl">{SITE_LEGAL_NAME}</h1>
     </div>
-  </div>
+  </section>
+
+  <section id="su-menh" class="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
+    <SectionHeading eyebrow="Sứ mệnh & Lịch sử" title="Nâng cao giá trị hạt cà phê Việt" />
+    <div class="mt-6 space-y-4 leading-relaxed text-coffee-700">
+      <p>
+        Hợp tác xã được thành lập bởi những nông hộ gắn bó lâu năm với cây cà phê trên vùng đất bazan Ea Kiết. Chúng tôi tin
+        rằng hạt cà phê Việt xứng đáng được trân trọng từ khâu canh tác đến tách cà phê cuối cùng.
+      </p>
+      <p>
+        Bằng việc liên kết nông hộ, chuẩn hóa quy trình và minh bạch nguồn gốc, HTX hướng tới mang lại thu nhập bền vững cho
+        người trồng và sản phẩm chất lượng cho khách hàng trong nước và quốc tế.
+      </p>
+    </div>
+  </section>
+
+  <section id="mo-hinh" class="border-y border-coffee-200 bg-white">
+    <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+      <SectionHeading eyebrow="Mô hình liên kết" title="HTX đồng hành cùng nông hộ" />
+      <div class="mt-10 grid gap-6 md:grid-cols-3">
+        {linkagePolicies.map((p) => (
+          <div class="rounded-xl border border-coffee-200 bg-coffee-50 p-6">
+            <h3 class="font-sans text-lg font-semibold text-leaf-700">{p.title}</h3>
+            <p class="mt-2 text-sm text-coffee-700">{p.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="vung-nguyen-lieu" class="mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:px-8">
+    <div>
+      <SectionHeading eyebrow="Vùng nguyên liệu" title="Đất bazan, độ cao và khí hậu Tây Nguyên" />
+      <p class="mt-6 leading-relaxed text-coffee-700">
+        Vùng trồng nằm trên nền đất đỏ bazan màu mỡ, khí hậu cao nguyên với mùa mưa – mùa khô rõ rệt, tạo điều kiện lý tưởng
+        để hạt cà phê tích lũy hương vị đậm đà.
+      </p>
+    </div>
+    <div class="aspect-[4/3] overflow-hidden rounded-2xl border border-coffee-200 bg-coffee-100">
+      <iframe
+        title="Bản đồ vùng nguyên liệu"
+        src={`https://maps.google.com/maps?q=${encodeURIComponent(LEGAL.mapQuery)}&z=11&output=embed`}
+        class="h-full w-full"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+  </section>
+
+  <section id="chung-nhan" class="border-t border-coffee-200 bg-white">
+    <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+      <SectionHeading eyebrow="Pháp lý & Chứng nhận" title="Hồ sơ pháp lý & Chứng nhận" />
+      {groups.length > 0 ? (
+        groups.map((group) => (
+          <div class="mt-10">
+            <h3 class="font-sans text-lg font-semibold text-coffee-900">{group.label}</h3>
+            <div class="mt-4 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {group.items.map((a) => (
+                <AwardCard title={a.data.title} year={a.data.year} description={a.data.description} image={a.data.image} organization={a.data.organization} />
+              ))}
+            </div>
+          </div>
+        ))
+      ) : (
+        <p class="mt-6 text-coffee-600">Hồ sơ đang được cập nhật.</p>
+      )}
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-4 py-16 text-center sm:px-6 lg:px-8">
+    <h2 class="text-2xl text-coffee-900">Hợp tác cùng HTX</h2>
+    <p class="mt-3 text-coffee-600">Mua sỉ, làm đại lý hay nhận mẫu thử — chúng tôi sẵn sàng tư vấn.</p>
+    <div class="mt-6"><CallToAction href="/contact#lien-he" text="Liên hệ hợp tác" /></div>
+  </section>
 </BaseLayout>

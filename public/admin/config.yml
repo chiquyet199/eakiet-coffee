@@ -7,6 +7,7 @@ public_folder: "/images/uploads"
 
 locale: "vi"
 
+# Select option values must match src/utils/taxonomy.ts.
 collections:
   - name: products
     label: Sản phẩm
@@ -18,24 +19,75 @@ collections:
     frontmatter_delimiters: ["---", "---"]
     fields:
       - { label: Tiêu đề, name: title, widget: string }
-      - { label: Giá, name: price, widget: number }
+      - label: Dòng sản phẩm
+        name: productLine
+        widget: select
+        default: roasted
+        options:
+          - { label: Cà phê nhân xanh, value: green }
+          - { label: Cà phê rang xay, value: roasted }
+          - { label: Cà phê quà tặng, value: gift }
+      - label: Loại hạt
+        name: beanType
+        widget: select
+        required: false
+        options:
+          - { label: Robusta, value: robusta }
+          - { label: Arabica, value: arabica }
+          - { label: Phối trộn, value: blend }
+      - label: Phương pháp sơ chế
+        name: processMethod
+        widget: select
+        required: false
+        options:
+          - { label: Natural, value: natural }
+          - { label: Honey, value: honey }
+          - { label: Washed, value: washed }
+      - { label: Giá (để trống = Liên hệ), name: price, widget: number, required: false }
       - { label: Đơn vị tiền, name: currency, widget: string, default: "VND" }
-      - { label: Danh mục, name: category, widget: string, required: false }
       - { label: Nổi bật, name: featured, widget: boolean, default: false }
       - { label: Xuất bản, name: published, widget: boolean, default: true }
       - { label: Ảnh chính, name: mainImage, widget: image }
       - { label: Ảnh khác, name: images, widget: list, required: false, field: { label: Ảnh, name: image, widget: image } }
       - { label: Mô tả ngắn, name: description, widget: text }
-      - label: Thông số
+      - label: Thông số chung
         name: specifications
         widget: object
         required: false
         fields:
           - { label: Xuất xứ, name: origin, widget: string, required: false }
           - { label: Mức rang, name: roastLevel, widget: string, required: false }
-          - { label: Quy trình, name: process, widget: string, required: false }
           - { label: Độ cao, name: altitude, widget: string, required: false }
           - { label: Hương vị, name: flavor, widget: string, required: false }
+      - label: Thông số kỹ thuật (nhân xanh)
+        name: greenSpec
+        widget: object
+        required: false
+        collapsed: true
+        fields:
+          - { label: "Độ ẩm (vd: <12.5%)", name: moisture, widget: string, required: false }
+          - { label: Tỷ lệ tạp chất, name: foreignMatter, widget: string, required: false }
+          - { label: Tỷ lệ hạt vỡ, name: brokenBeans, widget: string, required: false }
+          - { label: "Kích thước sàng (vd: S16/S18)", name: screenSize, widget: string, required: false }
+      - { label: "Quy cách đóng gói (vd: Bao Jute 60kg)", name: packaging, widget: list, required: false, field: { label: Quy cách, name: item, widget: string } }
+      - { label: Spec Sheet (PDF), name: specSheet, widget: file, required: false }
+      - label: Biểu đồ hương vị (rang xay, thang 0–5)
+        name: flavorProfile
+        widget: object
+        required: false
+        collapsed: true
+        fields:
+          - { label: Độ đắng, name: bitterness, widget: number, value_type: int, min: 0, max: 5, required: false }
+          - { label: Độ chua, name: acidity, widget: number, value_type: int, min: 0, max: 5, required: false }
+          - { label: Độ ngọt, name: sweetness, widget: number, value_type: int, min: 0, max: 5, required: false }
+          - { label: Hương thơm, name: aroma, widget: number, value_type: int, min: 0, max: 5, required: false }
+          - { label: Body, name: body, widget: number, value_type: int, min: 0, max: 5, required: false }
+      - label: Tùy chọn dạng hạt/bột
+        name: grindOptions
+        widget: select
+        multiple: true
+        required: false
+        options: ["Hạt nguyên", "Bột pha phin", "Bột pha máy Espresso", "Bột Cold Brew"]
       - { label: Thứ tự, name: order, widget: number, default: 0 }
       - { label: Ngày tạo, name: createdAt, widget: datetime }
       - { label: Ngày cập nhật, name: updatedAt, widget: datetime }
@@ -51,6 +103,14 @@ collections:
     frontmatter_delimiters: ["---", "---"]
     fields:
       - { label: Tiêu đề, name: title, widget: string }
+      - label: Chuyên mục
+        name: category
+        widget: select
+        default: htx
+        options:
+          - { label: Tin tức HTX, value: htx }
+          - { label: Kiến thức cà phê, value: kien-thuc }
+          - { label: Góc nông dân, value: goc-nong-dan }
       - { label: Trích dẫn, name: excerpt, widget: text }
       - { label: Ảnh đại diện, name: featuredImage, widget: image }
       - { label: Tác giả, name: author, widget: string, required: false }
@@ -62,7 +122,7 @@ collections:
       - { label: Nội dung, name: body, widget: markdown }
 
   - name: awards
-    label: Giải thưởng
+    label: Chứng nhận & Hồ sơ
     folder: src/content/awards
     create: true
     slug: "{{slug}}"
@@ -70,8 +130,65 @@ collections:
     format: json
     fields:
       - { label: Tiêu đề, name: title, widget: string }
-      - { label: Năm, name: year, widget: number }
-      - { label: Mô tả, name: description, widget: text }
-      - { label: Ảnh, name: image, widget: image, required: false }
-      - { label: Tổ chức, name: organization, widget: string, required: false }
+      - label: Loại
+        name: kind
+        widget: select
+        default: award
+        hint: "Chứng nhận hiện logo ở trang chủ; tất cả hiện ở trang Về chúng tôi."
+        options:
+          - { label: Chứng nhận (OCOP, ISO, Fairtrade…), value: certification }
+          - { label: Giải thưởng / Bằng khen, value: award }
+          - { label: Hồ sơ pháp lý (ĐKKD, mã vùng trồng, ATVSTP…), value: legal }
+      - { label: Năm, name: year, widget: number, required: false }
+      - { label: Mô tả, name: description, widget: text, required: false }
+      - { label: Ảnh / Logo / Bản scan, name: image, widget: image, required: false }
+      - { label: Tổ chức cấp, name: organization, widget: string, required: false }
       - { label: Thứ tự, name: order, widget: number, default: 0 }
+
+  - name: settings
+    label: Cài đặt
+    files:
+      - name: home
+        label: Trang chủ
+        file: src/content/settings/home.json
+        format: json
+        fields:
+          - { label: Slogan, name: heroSlogan, widget: string }
+          - { label: Dòng mô tả dưới slogan, name: heroSubtitle, widget: text, required: false }
+          - { label: Ảnh nền banner (hiện khi video chưa tải), name: heroPoster, widget: image, required: false }
+          - label: Con số nổi bật
+            name: metrics
+            widget: list
+            summary: "{{fields.value}} {{fields.label}}"
+            fields:
+              - { label: Con số, name: value, widget: string }
+              - { label: Nhãn, name: label, widget: string }
+          - { label: Giới thiệu ngắn, name: aboutPreview, widget: text, required: false }
+          - label: Các bước quy trình
+            name: processSteps
+            widget: list
+            summary: "{{fields.title}}"
+            fields:
+              - { label: Tên bước, name: title, widget: string }
+              - { label: Mô tả, name: description, widget: string, required: false }
+      - name: site
+        label: Thông tin liên hệ & pháp lý
+        file: src/data/site.json
+        format: json
+        fields:
+          - { label: Số điện thoại / Hotline, name: phone, widget: string, hint: "VD: 0909 620 992 — dùng cho nút Gọi và Zalo trên toàn website." }
+          - { label: Số Zalo (để trống = dùng số điện thoại), name: zalo, widget: string, required: false }
+          - { label: Email liên hệ, name: email, widget: string, pattern: ['^[^\s@]+@[^\s@]+\.[^\s@]+$', "Email không hợp lệ"] }
+          - label: Email nhận thông báo yêu cầu (để trống = dùng email liên hệ)
+            name: notifyEmail
+            widget: string
+            required: false
+            hint: "Email mới phải được xác minh trong Cloudflare Email Routing trước khi nhận được thông báo."
+          - { label: Giờ làm việc, name: hours, widget: string }
+          - { label: Mã số thuế, name: taxCode, widget: string }
+          - { label: Đại diện pháp luật, name: representative, widget: string }
+          - { label: Địa chỉ văn phòng / trụ sở, name: office, widget: string }
+          - { label: Địa chỉ nhà xưởng, name: factory, widget: string }
+          - { label: Vị trí bản đồ (địa chỉ hoặc "vĩ độ,kinh độ"), name: mapQuery, widget: string }
+          - { label: Facebook, name: facebook, widget: string }
+          - { label: Instagram, name: instagram, widget: string }

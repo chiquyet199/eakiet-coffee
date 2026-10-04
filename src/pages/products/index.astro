@@ -2,36 +2,106 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProductCard from '../../components/ProductCard.astro';
 import { getCollection } from 'astro:content';
+import { BEAN_TYPES, PROCESS_METHODS, PRODUCT_LINES } from '../../utils/taxonomy';
 
 const products = await getCollection('products', (p) => p.data.published);
 const sorted = products.sort((a, b) => a.data.order - b.data.order);
+
+// data-* attribute on ProductCard → filter group
+const filterGroups = [
+  { key: 'line', label: 'Dòng sản phẩm', options: PRODUCT_LINES },
+  { key: 'bean', label: 'Loại hạt', options: BEAN_TYPES },
+  { key: 'process', label: 'Phương pháp sơ chế', options: PROCESS_METHODS },
+];
 ---
 
-<BaseLayout title="Sản phẩm" description="Danh mục sản phẩm cà phê Eakiet — chất lượng cao, thông tin và giá.">
+<BaseLayout title="Sản phẩm" description="Cà phê nhân xanh, cà phê rang xay và quà tặng của HTX Công Bằng Ea Kiết.">
   <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
     <header class="mb-10">
-      <h1 class="text-3xl font-bold text-coffee-900 sm:text-4xl">Sản phẩm</h1>
-      <p class="mt-2 text-coffee-600">Khám phá các dòng cà phê chất lượng của Eakiet Coffee.</p>
+      <h1 class="text-3xl text-coffee-900 sm:text-4xl">Sản phẩm</h1>
+      <p class="mt-2 text-coffee-600">Cà phê nhân xanh cho xuất khẩu & xưởng rang, cà phê rang xay cho quán và đại lý, quà tặng cho khách lẻ.</p>
     </header>
 
     {sorted.length > 0 ? (
-      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {sorted.map((product) => (
-          <ProductCard
-            title={product.data.title}
-            price={product.data.price}
-            currency={product.data.currency}
-            image={product.data.mainImage}
-            slug={product.slug}
-            category={product.data.category}
-            description={product.data.description}
-          />
-        ))}
+      <div class="grid gap-8 lg:grid-cols-[15rem_1fr]">
+        <aside>
+          <details id="filter-panel" class="group rounded-xl border border-coffee-200 bg-white p-4 lg:sticky lg:top-24">
+            <summary class="flex cursor-pointer items-center justify-between font-semibold text-coffee-900 lg:pointer-events-none">
+              Bộ lọc
+              <span class="text-coffee-400 transition group-open:rotate-180 lg:hidden" aria-hidden="true">▾</span>
+            </summary>
+            <form id="product-filter" class="mt-4 space-y-5">
+              {filterGroups.map((group) => (
+                <fieldset>
+                  <legend class="text-xs font-semibold uppercase tracking-wider text-leaf-700">{group.label}</legend>
+                  <div class="mt-2 space-y-1.5">
+                    {Object.entries(group.options).map(([value, label]) => (
+                      <label class="flex cursor-pointer items-center gap-2 text-sm text-coffee-800">
+                        <input type="checkbox" name={group.key} value={value} class="h-4 w-4 rounded accent-leaf-700" />
+                        {label}
+                      </label>
+                    ))}
+                  </div>
+                </fieldset>
+              ))}
+              <button type="reset" class="text-sm font-medium text-ripe-600 hover:text-ripe-700">Xóa bộ lọc</button>
+            </form>
+          </details>
+        </aside>
+
+        <div>
+          <div id="product-grid" class="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+            {sorted.map((product) => <ProductCard product={product} />)}
+          </div>
+          <p id="product-empty" class="hidden rounded-xl border border-dashed border-coffee-300 p-8 text-center text-coffee-600">
+            Không có sản phẩm phù hợp với bộ lọc.
+          </p>
+        </div>
       </div>
     ) : (
-      <p class="rounded-xl border border-coffee-200 bg-coffee-50 p-8 text-center text-coffee-600">
+      <p class="rounded-xl border border-coffee-200 bg-white p-8 text-center text-coffee-600">
         Chưa có sản phẩm nào. Quản trị viên có thể thêm sản phẩm qua CMS.
       </p>
     )}
   </div>
 </BaseLayout>
+
+<script>
+  const form = document.getElementById('product-filter') as HTMLFormElement | null;
+  const cards = document.querySelectorAll<HTMLElement>('.product-card');
+  const empty = document.getElementById('product-empty');
+  const groups = ['line', 'bean', 'process'] as const;
+
+  function apply() {
+    if (!form) return;
+    const data = new FormData(form);
+    let visible = 0;
+    for (const card of cards) {
+      // Within a group any checked value matches; across groups all must match.
+      const show = groups.every((group) => {
+        const selected = data.getAll(group);
+        return selected.length === 0 || selected.includes(card.dataset[group] ?? '');
+      });
+      card.classList.toggle('hidden', !show);
+      if (show) visible++;
+    }
+    empty?.classList.toggle('hidden', visible > 0);
+  }
+
+  // Deep links from the homepage tabs: /products?line=green
+  const params = new URLSearchParams(location.search);
+  for (const group of groups) {
+    for (const value of params.getAll(group)) {
+      const box = form?.querySelector<HTMLInputElement>(`input[name="${group}"][value="${value}"]`);
+      if (box) box.checked = true;
+    }
+  }
+
+  // Collapsed on phones so products show first; always open in the desktop sidebar.
+  const panel = document.getElementById('filter-panel') as HTMLDetailsElement | null;
+  if (panel && matchMedia('(min-width: 1024px)').matches) panel.open = true;
+
+  form?.addEventListener('change', apply);
+  form?.addEventListener('reset', () => setTimeout(apply));
+  apply();
+</script>

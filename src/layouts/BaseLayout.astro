@@ -2,16 +2,19 @@
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import FloatingContact from '../components/FloatingContact.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../utils/constants';
 
 interface Props {
   title: string;
   description?: string;
   image?: string;
+  noindex?: boolean;
 }
 
-const { title, description, image } = Astro.props;
-const siteTitle = title ? `${title} | Eakiet Coffee` : 'Eakiet Coffee';
-const metaDescription = description ?? 'Eakiet Coffee — Cà phê gia đình. Sản phẩm chất lượng cao.';
+const { title, description, image, noindex = false } = Astro.props;
+const siteTitle = title ? `${title} | ${SITE_TITLE}` : SITE_TITLE;
+const metaDescription = description ?? SITE_DESCRIPTION;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://eakietcoffee.com.vn');
 const baseUrl = Astro.site ?? 'https://eakietcoffee.com.vn';
 const ogImage = image ? new URL(image, baseUrl).href : null;
@@ -23,8 +26,15 @@ const ogImage = image ? new URL(image, baseUrl).href : null;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={metaDescription} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href={canonicalURL} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Merriweather:wght@700;900&display=swap&subset=vietnamese"
+    />
     <meta property="og:title" content={siteTitle} />
     <meta property="og:description" content={metaDescription} />
     {ogImage && <meta property="og:image" content={ogImage} />}
@@ -41,5 +51,6 @@ const ogImage = image ? new URL(image, baseUrl).href : null;
       <slot />
     </main>
     <Footer />
+    <FloatingContact />
   </body>
 </html>

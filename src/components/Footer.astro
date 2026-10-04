@@ -1,33 +1,43 @@
 ---
-import { CONTACT, SOCIAL } from '../utils/constants';
+import Logo from './Logo.astro';
+import { CONTACT, LEGAL, SITE_LEGAL_NAME, SITE_TITLE, SOCIAL, ZALO_URL } from '../utils/constants';
 ---
 
-<footer class="border-t border-coffee-200 bg-coffee-100/50">
+<footer class="bg-coffee-900 text-coffee-200">
   <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
-    <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-      <div>
-        <h3 class="text-sm font-semibold uppercase tracking-wider text-coffee-700">Eakiet Coffee</h3>
-        <p class="mt-2 text-sm text-coffee-700">Cà phê gia đình — Chất lượng cao, thông tin rõ ràng.</p>
+    <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="lg:col-span-2">
+        <Logo light />
+        <p class="mt-4 text-sm font-semibold text-white">{SITE_LEGAL_NAME}</p>
+        <dl class="mt-3 space-y-1 text-sm">
+          <div><dt class="inline text-coffee-400">Mã số thuế: </dt><dd class="inline">{LEGAL.taxCode}</dd></div>
+          <div><dt class="inline text-coffee-400">Đại diện pháp luật: </dt><dd class="inline">{LEGAL.representative}</dd></div>
+          <div><dt class="inline text-coffee-400">Văn phòng: </dt><dd class="inline">{LEGAL.office}</dd></div>
+          <div><dt class="inline text-coffee-400">Nhà xưởng: </dt><dd class="inline">{LEGAL.factory}</dd></div>
+        </dl>
       </div>
       <div>
-        <h3 class="text-sm font-semibold uppercase tracking-wider text-coffee-700">Liên hệ</h3>
-        <ul class="mt-2 space-y-1 text-sm text-coffee-700">
-          <li><a href={`tel:${CONTACT.phone.replace(/\s/g, '')}`} class="hover:text-coffee-900">{CONTACT.phone}</a></li>
-          <li><a href={`mailto:${CONTACT.email}`} class="hover:text-coffee-900">{CONTACT.email}</a></li>
-          <li>{CONTACT.address}</li>
+        <h3 class="font-sans text-sm font-semibold uppercase tracking-wider text-white">Liên hệ</h3>
+        <ul class="mt-3 space-y-1.5 text-sm">
+          <li>Hotline: <a href={CONTACT.tel} class="hover:text-white">{CONTACT.phone}</a></li>
+          <li><a href={ZALO_URL} target="_blank" rel="noopener noreferrer" class="hover:text-white">Zalo: {CONTACT.phone}</a></li>
+          <li><a href={`mailto:${CONTACT.email}`} class="hover:text-white">{CONTACT.email}</a></li>
           <li>{CONTACT.hours}</li>
         </ul>
       </div>
       <div>
-        <h3 class="text-sm font-semibold uppercase tracking-wider text-coffee-700">Mạng xã hội</h3>
-        <ul class="mt-2 flex gap-4 text-sm">
-          <li><a href={SOCIAL.facebook} target="_blank" rel="noopener noreferrer" class="hover:text-coffee-900">Facebook</a></li>
-          <li><a href={SOCIAL.instagram} target="_blank" rel="noopener noreferrer" class="hover:text-coffee-900">Instagram</a></li>
+        <h3 class="font-sans text-sm font-semibold uppercase tracking-wider text-white">Khám phá</h3>
+        <ul class="mt-3 space-y-1.5 text-sm">
+          <li><a href="/products" class="hover:text-white">Sản phẩm</a></li>
+          <li><a href="/process" class="hover:text-white">Quy trình & Chất lượng</a></li>
+          <li><a href="/news" class="hover:text-white">Tin tức & Kiến thức</a></li>
+          <li><a href={SOCIAL.facebook} target="_blank" rel="noopener noreferrer" class="hover:text-white">Facebook</a></li>
+          <li><a href={SOCIAL.instagram} target="_blank" rel="noopener noreferrer" class="hover:text-white">Instagram</a></li>
         </ul>
       </div>
     </div>
-    <div class="mt-8 border-t border-coffee-200 pt-8 text-center text-sm text-coffee-600">
-      <p>© {new Date().getFullYear()} Eakiet Coffee. All rights reserved.</p>
+    <div class="mt-10 border-t border-coffee-700 pt-6 text-center text-sm text-coffee-400">
+      <p>© {new Date().getFullYear()} {SITE_TITLE}. Bảo lưu mọi quyền.</p>
     </div>
   </div>
 </footer>

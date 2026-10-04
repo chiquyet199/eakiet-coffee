@@ -1,5 +1,6 @@
 ---
 import { formatDate } from '../utils/formatDate';
+import { NEWS_CATEGORIES } from '../utils/taxonomy';
 
 interface Props {
   title: string;
@@ -7,12 +8,13 @@ interface Props {
   image: string;
   slug: string;
   date: Date;
+  category: keyof typeof NEWS_CATEGORIES;
 }
 
-const { title, excerpt, image, slug, date } = Astro.props;
+const { title, excerpt, image, slug, date, category } = Astro.props;
 ---
 
-<article class="group overflow-hidden rounded-xl border border-coffee-200 bg-white shadow-sm transition hover:shadow-md">
+<article data-category={category} class="news-card group overflow-hidden rounded-xl border border-coffee-200 bg-white shadow-sm transition hover:shadow-md">
   <a href={`/news/${slug}`} class="block">
     <div class="aspect-[16/10] overflow-hidden bg-coffee-100">
       <img
@@ -25,8 +27,11 @@ const { title, excerpt, image, slug, date } = Astro.props;
       />
     </div>
     <div class="p-4">
-      <time class="text-sm text-coffee-500" datetime={date.toISOString()}>{formatDate(date)}</time>
-      <h2 class="mt-1 font-semibold text-coffee-900 group-hover:text-coffee-600">{title}</h2>
+      <p class="flex flex-wrap items-center gap-2 text-sm text-coffee-500">
+        <span class="font-semibold text-leaf-700">{NEWS_CATEGORIES[category]}</span>
+        <time datetime={date.toISOString()}>{formatDate(date)}</time>
+      </p>
+      <h2 class="mt-1 font-serif text-lg font-bold text-coffee-900 group-hover:text-ripe-600">{title}</h2>
       <p class="mt-2 line-clamp-2 text-sm text-coffee-600">{excerpt}</p>
     </div>
   </a>

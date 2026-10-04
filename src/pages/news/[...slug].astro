@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { formatDate } from '../../utils/formatDate';
+import { NEWS_CATEGORIES } from '../../utils/taxonomy';
 import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -19,7 +20,8 @@ const { Content } = await article.render();
 <BaseLayout title={data.title} description={data.excerpt} image={data.featuredImage}>
   <article class="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
     <header class="mb-8">
-      <h1 class="text-3xl font-bold text-coffee-900 sm:text-4xl">{data.title}</h1>
+      <a href={`/news?category=${data.category}`} class="text-sm font-semibold uppercase tracking-wider text-leaf-700 hover:text-ripe-600">{NEWS_CATEGORIES[data.category]}</a>
+      <h1 class="mt-2 text-3xl text-coffee-900 sm:text-4xl">{data.title}</h1>
       <div class="mt-4 flex flex-wrap items-center gap-4 text-sm text-coffee-600">
         <time datetime={data.publishedDate.toISOString()}>{formatDate(data.publishedDate)}</time>
         {data.author && <span>— {data.author}</span>}

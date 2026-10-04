@@ -1,0 +1,22 @@
+---
+import { SITE_TITLE } from '../utils/constants';
+
+interface Props {
+  light?: boolean;
+}
+
+const { light = false } = Astro.props;
+---
+
+<!-- Text logo until the HTX supplies its logo file. -->
+<a href="/" class="flex items-center gap-2.5" aria-label={`${SITE_TITLE} — Trang chủ`}>
+  <img src="/favicon.svg" alt="" width="36" height="36" class="h-9 w-9" />
+  <span class="leading-tight">
+    <span class:list={['block text-[0.65rem] font-semibold uppercase tracking-[0.2em]', light ? 'text-coffee-300' : 'text-leaf-700']}>
+      Hợp tác xã
+    </span>
+    <span class:list={['block font-serif text-base font-bold sm:text-lg', light ? 'text-white' : 'text-coffee-900']}>
+      Công Bằng Ea Kiết
+    </span>
+  </span>
+</a>

@@ -1,12 +1,11 @@
 ---
+import Logo from './Logo.astro';
 import Navigation from './Navigation.astro';
 ---
 
-<header class="sticky top-0 z-50 border-b border-coffee-200/80 bg-coffee-50/95 backdrop-blur supports-[backdrop-filter]:bg-coffee-50/80">
-  <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-    <a href="/" class="flex items-center gap-2 font-semibold text-coffee-800 transition hover:text-coffee-600">
-      <span class="text-xl">Eakiet Coffee</span>
-    </a>
+<header class="sticky top-0 z-50 border-b border-coffee-200/80 bg-coffee-50/95 backdrop-blur supports-[backdrop-filter]:bg-coffee-50/85">
+  <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
+    <Logo />
     <Navigation />
   </div>
 </header>

@@ -7,6 +7,10 @@ import cloudflare from '@astrojs/cloudflare';
 export default defineConfig({
   site: 'https://eakietcoffee.com.vn',
   integrations: [tailwind()],
+  // The awards page was folded into About (Hồ sơ pháp lý & Chứng nhận).
+  redirects: {
+    '/awards': '/about#chung-nhan',
+  },
   adapter: cloudflare({
     platformProxy: {
       enabled: true,

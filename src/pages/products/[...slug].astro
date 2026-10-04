@@ -1,8 +1,10 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import ContactInfo from '../../components/ContactInfo.astro';
 import CallToAction from '../../components/CallToAction.astro';
+import FlavorChart from '../../components/FlavorChart.astro';
 import { formatPrice } from '../../utils/formatPrice';
+import { ZALO_URL } from '../../utils/constants';
+import { BEAN_TYPES, PROCESS_METHODS, PRODUCT_LINES } from '../../utils/taxonomy';
 import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -16,99 +18,134 @@ export async function getStaticPaths() {
 const { product } = Astro.props;
 const { data } = product;
 const { Content } = await product.render();
-const spec = data.specifications;
 const imageList = (data.images ?? []).map((i) => (typeof i === 'string' ? i : (i as { image: string }).image));
+const isGreen = data.productLine === 'green';
+const contactLink = (type: string) => `/contact?type=${type}&product=${encodeURIComponent(data.title)}#lien-he`;
+
+const specRows = [
+  ['Dòng sản phẩm', PRODUCT_LINES[data.productLine]],
+  ['Loại hạt', data.beanType && BEAN_TYPES[data.beanType]],
+  ['Sơ chế', data.processMethod && PROCESS_METHODS[data.processMethod]],
+  ['Xuất xứ', data.specifications?.origin],
+  ['Độ cao', data.specifications?.altitude],
+  ['Mức rang', data.specifications?.roastLevel],
+  ['Hương vị', data.specifications?.flavor],
+  ...(isGreen
+    ? [
+        ['Độ ẩm', data.greenSpec?.moisture],
+        ['Tỷ lệ tạp chất', data.greenSpec?.foreignMatter],
+        ['Tỷ lệ hạt vỡ', data.greenSpec?.brokenBeans],
+        ['Sieve size', data.greenSpec?.screenSize],
+      ]
+    : []),
+].filter((row): row is [string, string] => Boolean(row[1]));
+
+const profile = data.flavorProfile;
+const hasProfile = !isGreen && profile && Object.values(profile).some((v) => v !== undefined);
 ---
 
-<BaseLayout
-  title={data.title}
-  description={data.description.slice(0, 160)}
-  image={data.mainImage}
->
+<BaseLayout title={data.title} description={data.description.slice(0, 160)} image={data.mainImage}>
   <article class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
+    <nav class="mb-6 text-sm text-coffee-500" aria-label="Breadcrumb">
+      <a href="/products" class="hover:text-ripe-600">Sản phẩm</a>
+      <span class="mx-1.5">/</span>
+      <a href={`/products?line=${data.productLine}`} class="hover:text-ripe-600">{PRODUCT_LINES[data.productLine]}</a>
+    </nav>
+
     <div class="grid gap-10 lg:grid-cols-2 lg:gap-16">
       <div class="space-y-4">
         <div class="aspect-square overflow-hidden rounded-xl bg-coffee-100">
-          <img
-            src={data.mainImage}
-            alt={data.title}
-            class="h-full w-full object-cover"
-            width="600"
-            height="600"
-          />
+          <img id="main-image" src={data.mainImage} alt={data.title} class="h-full w-full object-cover" width="600" height="600" />
         </div>
         {imageList.length > 1 && (
           <div class="flex gap-2 overflow-x-auto pb-2">
             {imageList.map((img) => (
-              <img
-                src={img}
-                alt=""
-                class="h-20 w-20 shrink-0 rounded-lg object-cover"
-                width="80"
-                height="80"
-              />
+              <button type="button" class="thumb shrink-0" data-src={img}>
+                <img src={img} alt="" class="h-20 w-20 rounded-lg object-cover" width="80" height="80" />
+              </button>
             ))}
           </div>
         )}
       </div>
 
       <div>
-        {data.category && (
-          <p class="text-sm font-medium uppercase tracking-wider text-coffee-500">{data.category}</p>
-        )}
-        <h1 class="mt-1 text-3xl font-bold text-coffee-900 sm:text-4xl">{data.title}</h1>
-        <p class="mt-4 text-2xl font-semibold text-coffee-700">{formatPrice(data.price, data.currency)}</p>
-        <div class="mt-6 prose prose-coffee max-w-none">
-          <p class="text-coffee-700">{data.description}</p>
-        </div>
+        <p class="text-sm font-semibold uppercase tracking-wider text-leaf-700">{PRODUCT_LINES[data.productLine]}</p>
+        <h1 class="mt-1 text-3xl text-coffee-900 sm:text-4xl">{data.title}</h1>
+        <p class="mt-4 text-2xl font-semibold text-ripe-600">{formatPrice(data.price, data.currency)}</p>
+        <p class="mt-6 leading-relaxed text-coffee-700">{data.description}</p>
 
-        {spec && (spec.origin || spec.roastLevel || spec.process || spec.altitude || spec.flavor) && (
-          <dl class="mt-8 grid gap-3 sm:grid-cols-2">
-            {spec.origin && (
-              <>
-                <dt class="text-sm font-medium text-coffee-500">Xuất xứ</dt>
-                <dd class="text-sm text-coffee-900">{spec.origin}</dd>
-              </>
-            )}
-            {spec.roastLevel && (
-              <>
-                <dt class="text-sm font-medium text-coffee-500">Mức rang</dt>
-                <dd class="text-sm text-coffee-900">{spec.roastLevel}</dd>
-              </>
-            )}
-            {spec.process && (
-              <>
-                <dt class="text-sm font-medium text-coffee-500">Quy trình</dt>
-                <dd class="text-sm text-coffee-900">{spec.process}</dd>
-              </>
-            )}
-            {spec.altitude && (
-              <>
-                <dt class="text-sm font-medium text-coffee-500">Độ cao</dt>
-                <dd class="text-sm text-coffee-900">{spec.altitude}</dd>
-              </>
-            )}
-            {spec.flavor && (
-              <>
-                <dt class="text-sm font-medium text-coffee-500">Hương vị</dt>
-                <dd class="text-sm text-coffee-900">{spec.flavor}</dd>
-              </>
-            )}
-          </dl>
+        {!isGreen && data.grindOptions.length > 0 && (
+          <div class="mt-6">
+            <h2 class="font-sans text-sm font-semibold text-coffee-900">Tùy chọn</h2>
+            <ul class="mt-2 flex flex-wrap gap-2">
+              {data.grindOptions.map((opt) => (
+                <li class="rounded-full border border-coffee-300 px-3 py-1 text-sm text-coffee-800">{opt}</li>
+              ))}
+            </ul>
+          </div>
         )}
 
-        <div class="mt-8 prose prose-coffee max-w-none">
-          <Content />
+        <div class="mt-8 flex flex-wrap gap-3">
+          {isGreen ? (
+            <>
+              {data.specSheet && <CallToAction href={data.specSheet} text="Tải Spec Sheet PDF" variant="secondary" target="_blank" />}
+              <CallToAction href={contactLink('sample')} text="Đăng ký nhận mẫu thử" variant="primary" />
+            </>
+          ) : (
+            <>
+              <CallToAction href={ZALO_URL} text="Đặt hàng qua Zalo" variant="primary" target="_blank" />
+              <CallToAction href={contactLink('wholesale')} text="Liên hệ giá sỉ" variant="secondary" />
+            </>
+          )}
         </div>
 
-        <div class="mt-10 flex flex-wrap gap-4">
-          <CallToAction href="/contact" text="Liên hệ đặt hàng" variant="primary" />
-        </div>
+        {specRows.length > 0 && (
+          <section class="mt-10">
+            <h2 class="text-xl text-coffee-900">{isGreen ? 'Thông số kỹ thuật' : 'Thông tin sản phẩm'}</h2>
+            <table class="mt-4 w-full overflow-hidden rounded-xl border border-coffee-200 bg-white text-sm">
+              <tbody>
+                {specRows.map(([label, value]) => (
+                  <tr class="border-b border-coffee-100 last:border-0">
+                    <th scope="row" class="w-2/5 bg-coffee-50 px-4 py-2.5 text-left font-medium text-coffee-600">{label}</th>
+                    <td class="px-4 py-2.5 text-coffee-900">{value}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </section>
+        )}
 
-        <div class="mt-12">
-          <ContactInfo />
-        </div>
+        {isGreen && data.packaging.length > 0 && (
+          <section class="mt-8">
+            <h2 class="text-xl text-coffee-900">Quy cách đóng gói</h2>
+            <ul class="mt-3 flex flex-wrap gap-2">
+              {data.packaging.map((p) => <li class="rounded-full bg-leaf-50 px-3 py-1 text-sm font-medium text-leaf-700">{p}</li>)}
+            </ul>
+          </section>
+        )}
+
+        {hasProfile && profile && (
+          <section class="mt-10">
+            <h2 class="text-xl text-coffee-900">Biểu đồ hương vị</h2>
+            <div class="mt-4">
+              <FlavorChart profile={profile} />
+            </div>
+          </section>
+        )}
       </div>
+    </div>
+
+    <div class="prose prose-coffee mt-12 max-w-3xl text-coffee-800">
+      <Content />
     </div>
   </article>
 </BaseLayout>
+
+<script>
+  const main = document.getElementById('main-image') as HTMLImageElement | null;
+  for (const thumb of document.querySelectorAll<HTMLButtonElement>('.thumb')) {
+    thumb.addEventListener('click', () => {
+      if (main && thumb.dataset.src) main.src = thumb.dataset.src;
+    });
+  }
+</script>

@@ -2,7 +2,8 @@
 title: Chào mừng năm 2026
 excerpt: Eakiet Coffee chúc mừng năm mới và giới thiệu các sản phẩm mới.
 featuredImage: https://placehold.co/800x450/f2ebe0/54392d?text=News
-author: Eakiet Coffee
+author: HTX Công Bằng Ea Kiết
+category: htx
 publishedDate: 2026-02-01T00:00:00.000Z
 published: true
 tags: []
