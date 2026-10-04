@@ -23,8 +23,8 @@
 	],
 	"vars": {
 		"LEAD_EMAIL_FROM": "website@eakietcoffee.com.vn",
-		"ACCESS_TEAM_DOMAIN": "",
-		"ACCESS_AUD": ""
+		"ACCESS_TEAM_DOMAIN": "billowing-moon-cb71.cloudflareaccess.com",
+		"ACCESS_AUD": "a0a6f25d3ea0c624d86f008ecf33c2f68b6b1a88f4b31847f31b0019790ab046"
 	},
 	"send_email": [
 		{
