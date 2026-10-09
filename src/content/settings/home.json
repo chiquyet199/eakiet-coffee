@@ -3,16 +3,40 @@
   "heroSubtitle": "Hợp tác xã liên kết nông hộ — thu hái chín 100%, sơ chế nhà màng, minh bạch từ vườn đến tách.",
   "heroPoster": "",
   "metrics": [
-    { "value": "500+ ha", "label": "Vùng trồng" },
-    { "value": "100+", "label": "Hộ liên kết" },
-    { "value": "1.000+", "label": "Tấn/năm" },
-    { "value": "100%", "label": "Thu hái chín" }
+    {
+      "value": "300+ ha",
+      "label": "Vùng trồng"
+    },
+    {
+      "value": "100+",
+      "label": "Thành viên"
+    },
+    {
+      "value": "1.000+",
+      "label": "Tấn/năm"
+    },
+    {
+      "value": "95%",
+      "label": "Thu hái chín"
+    }
   ],
   "aboutPreview": "Hợp tác xã Nông nghiệp – Dịch vụ Công Bằng Ea Kiết liên kết các nông hộ trồng cà phê trên vùng đất bazan Tây Nguyên, hỗ trợ kỹ thuật canh tác, bao tiêu sản phẩm và cùng nhau nâng cao giá trị hạt cà phê Việt.",
   "processSteps": [
-    { "title": "Canh tác", "description": "Canh tác bền vững, thu hái chín trên 95%." },
-    { "title": "Sơ chế nhà màng", "description": "Natural, Honey, Washed trên giàn phơi cách đất." },
-    { "title": "Rang & Cupping", "description": "Kiểm tra hương vị từng mẻ rang." },
-    { "title": "Đóng gói van 1 chiều", "description": "Giữ trọn hương thơm đến tay khách hàng." }
+    {
+      "title": "Canh tác",
+      "description": "Canh tác bền vững, thu hái chín trên 95%."
+    },
+    {
+      "title": "Sơ chế nhà màng",
+      "description": "Natural, Honey, Washed trên giàn phơi cách đất."
+    },
+    {
+      "title": "Rang & Cupping",
+      "description": "Kiểm tra hương vị từng mẻ rang."
+    },
+    {
+      "title": "Đóng gói van 1 chiều",
+      "description": "Giữ trọn hương thơm đến tay khách hàng."
+    }
   ]
 }
