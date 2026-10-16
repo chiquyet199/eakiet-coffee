@@ -99,9 +99,25 @@ const settingsCollection = defineCollection({
   }),
 });
 
+// Single-file collection (src/content/about/about.json) holding editable /about page copy.
+const aboutCollection = defineCollection({
+  type: 'data',
+  schema: z.object({
+    missionTitle: z.string(),
+    missionBody: z.string().default(''),
+    linkageTitle: z.string(),
+    linkagePolicies: z.array(z.object({ title: z.string(), text: z.string().default('') })).default([]),
+    regionTitle: z.string(),
+    regionText: z.string().default(''),
+    ctaTitle: z.string(),
+    ctaText: z.string().default(''),
+  }),
+});
+
 export const collections = {
   products: productCollection,
   news: newsCollection,
   awards: awardCollection,
   settings: settingsCollection,
+  about: aboutCollection,
 };

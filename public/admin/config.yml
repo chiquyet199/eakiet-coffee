@@ -171,6 +171,25 @@ collections:
             fields:
               - { label: Tên bước, name: title, widget: string }
               - { label: Mô tả, name: description, widget: string, required: false }
+      - name: about
+        label: Trang Giới thiệu
+        file: src/content/about/about.json
+        format: json
+        fields:
+          - { label: Tiêu đề Sứ mệnh & Lịch sử, name: missionTitle, widget: string }
+          - { label: Nội dung Sứ mệnh & Lịch sử (cách đoạn bằng 1 dòng trống), name: missionBody, widget: text, required: false }
+          - { label: Tiêu đề Mô hình liên kết, name: linkageTitle, widget: string }
+          - label: Chính sách liên kết
+            name: linkagePolicies
+            widget: list
+            summary: "{{fields.title}}"
+            fields:
+              - { label: Tiêu đề, name: title, widget: string }
+              - { label: Mô tả, name: text, widget: text, required: false }
+          - { label: Tiêu đề Vùng nguyên liệu, name: regionTitle, widget: string }
+          - { label: Mô tả Vùng nguyên liệu, name: regionText, widget: text, required: false, hint: "Vị trí bản đồ lấy từ mục Thông tin liên hệ & pháp lý." }
+          - { label: Tiêu đề kêu gọi hợp tác (cuối trang), name: ctaTitle, widget: string }
+          - { label: Mô tả kêu gọi hợp tác, name: ctaText, widget: text, required: false }
       - name: site
         label: Thông tin liên hệ & pháp lý
         file: src/data/site.json

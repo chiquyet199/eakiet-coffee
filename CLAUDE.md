@@ -53,7 +53,7 @@ in `src/utils/leads.ts`; `astro dev` swaps in Cloudflare's always-pass test key.
 Then create a Cloudflare Access self-hosted application for `<domain>/admin/leads*` and copy its team domain and AUD
 tag into those vars. `npm run cf-typegen` uses `--strict-vars=false` so vars type as `string`, not literals.
 
-**Content.** Four collections in `src/content/`, defined in `src/content/config.ts`:
+**Content.** Five collections in `src/content/`, defined in `src/content/config.ts`:
 
 | Collection | Type | Location | Notes |
 |---|---|---|---|
@@ -61,6 +61,7 @@ tag into those vars. `npm run cf-typegen` uses `--strict-vars=false` so vars typ
 | `news` | content (md) | `src/content/news/` | filtered by `published`, sorted by `publishedDate` desc; `category` drives the filter tabs |
 | `awards` | data (json) | `src/content/awards/` | `kind` = certification (homepage logos) / award / legal (About page) |
 | `settings` | data (json) | `src/content/settings/home.json` | single file: hero slogan, metrics, process steps (Decap `files` collection) |
+| `about` | data (json) | `src/content/about/about.json` | single file: `/about` copy — mission, linkage policies, region text, CTA (Decap "Cài đặt → Trang Giới thiệu") |
 
 Enum values (product line, bean type, process method, news category, award kind) live in `src/utils/taxonomy.ts`
 and are repeated as Decap `select` options — change both. `price` is optional; missing renders "Liên hệ báo giá".
