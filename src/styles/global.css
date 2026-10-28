@@ -21,18 +21,31 @@
   .form-input {
     @apply w-full rounded-lg border border-coffee-200 bg-white px-3 py-2.5 text-sm text-coffee-900 placeholder:text-coffee-400 focus:border-leaf-600 focus:outline-none focus:ring-2 focus:ring-leaf-600/20;
   }
-  /* Markdown bodies (no typography plugin installed). */
+  /* Markdown bodies (no typography plugin installed). The figure / embed-video / callout / pullquote / cta-button
+     blocks are inserted by the Decap editor components in public/admin/cms.js — keep class names in sync. */
+  .prose {
+    @apply text-[1.0625rem] leading-[1.8] text-coffee-800;
+  }
   .prose > * + * {
-    @apply mt-4;
+    @apply mt-5;
   }
   .prose h2 {
-    @apply mt-8 text-2xl text-coffee-900;
+    @apply mt-12 scroll-mt-24 border-b border-coffee-200 pb-2 text-2xl text-coffee-900;
   }
   .prose h3 {
-    @apply mt-6 text-xl text-coffee-900;
+    @apply mt-8 scroll-mt-24 text-xl text-coffee-900;
+  }
+  .prose h4 {
+    @apply mt-6 font-sans text-lg font-semibold text-coffee-900;
+  }
+  .prose strong {
+    @apply font-semibold text-coffee-900;
+  }
+  .prose mark {
+    @apply rounded bg-ripe-100 px-1 text-coffee-900;
   }
   .prose a {
-    @apply font-medium text-ripe-600 underline;
+    @apply font-medium text-ripe-600 underline underline-offset-2 hover:text-ripe-700;
   }
   .prose ul {
     @apply list-disc pl-6;
@@ -40,11 +53,80 @@
   .prose ol {
     @apply list-decimal pl-6;
   }
+  .prose li + li {
+    @apply mt-2;
+  }
+  .prose li::marker {
+    @apply text-leaf-700;
+  }
   .prose img {
-    @apply rounded-xl;
+    @apply h-auto max-w-full rounded-xl;
+  }
+  .prose hr {
+    @apply my-10 border-coffee-200;
   }
   .prose blockquote {
     @apply border-l-4 border-leaf-700 pl-4 italic text-coffee-700;
+  }
+  .prose table {
+    @apply block w-full overflow-x-auto text-left text-sm sm:table;
+  }
+  .prose th {
+    @apply border-b-2 border-coffee-200 px-3 py-2 font-semibold text-coffee-900;
+  }
+  .prose td {
+    @apply border-b border-coffee-100 px-3 py-2;
+  }
+  .prose figure {
+    @apply my-8;
+  }
+  .prose figcaption {
+    @apply mt-2 text-center text-sm italic text-coffee-600;
+  }
+  .prose figcaption:empty {
+    @apply hidden;
+  }
+  .prose .embed-video {
+    @apply my-8 aspect-video overflow-hidden rounded-xl bg-coffee-900;
+  }
+  .prose .embed-video iframe {
+    @apply h-full w-full border-0;
+  }
+  .prose .callout {
+    @apply my-8 rounded-xl border-l-4 px-5 py-4;
+  }
+  .prose .callout > * + * {
+    @apply mt-3;
+  }
+  .prose .callout-leaf {
+    @apply border-leaf-700 bg-leaf-50;
+  }
+  .prose .callout-ripe {
+    @apply border-ripe-500 bg-ripe-50;
+  }
+  .prose .callout-coffee {
+    @apply border-coffee-400 bg-coffee-100;
+  }
+  .prose .callout-title {
+    @apply font-serif text-lg font-bold text-coffee-900;
+  }
+  .prose .pullquote {
+    @apply my-10 border-l-0 border-y border-coffee-200 py-6 text-center not-italic;
+  }
+  .prose .pullquote p {
+    @apply font-serif text-xl leading-relaxed text-leaf-700 sm:text-2xl;
+  }
+  .prose .pullquote cite {
+    @apply mt-3 block text-sm not-italic text-coffee-600 before:content-['—_'];
+  }
+  .prose .cta-button {
+    @apply my-8 text-center;
+  }
+  .prose .cta-button a {
+    @apply inline-block rounded-lg bg-ripe-500 px-6 py-3 font-semibold text-white no-underline hover:bg-ripe-600 hover:text-white;
+  }
+  .article-lead {
+    @apply font-serif text-lg leading-relaxed text-coffee-700 sm:text-xl;
   }
   .form-label {
     @apply mb-1 block text-sm font-medium text-coffee-800;

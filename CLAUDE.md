@@ -81,6 +81,12 @@ breaks the build as soon as the CMS writes a document without it. Two consequenc
   rendered with a raw `<img>`. They are *not* Astro image assets, so there is no `astro:assets` optimization and
   no import-time validation that the file exists.
 
+- `public/admin/cms.js` registers Markdown editor blocks (video, captioned image, callout, pull quote, CTA button)
+  that are stored in the body as raw HTML and styled by `.prose …` rules in `src/styles/global.css`. Each block's
+  `pattern` must match its `toBlock` output exactly or the editor shows it as raw text. The preview pane loads the
+  compiled site CSS from `src/pages/admin/preview.css.ts`. For local editing, run `npx decap-server` alongside
+  `npm run dev` (`local_backend: true` writes files instead of committing to `main`).
+
 Decap uses the `git-gateway` backend against `main` with Netlify Identity (`public/admin/index.html`), so editor
 saves land as commits like `Update Sản phẩm "arabica-premium"` directly on the main branch. Expect content files
 to change outside of local work.

@@ -1,3 +1,6 @@
+# `npx decap-server` + /admin on localhost edits local files instead of committing to main.
+local_backend: true
+
 backend:
   name: git-gateway
   branch: main

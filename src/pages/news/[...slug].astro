@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { formatDate } from '../../utils/formatDate';
+import { readingTime } from '../../utils/readingTime';
 import { NEWS_CATEGORIES } from '../../utils/taxonomy';
 import { getCollection } from 'astro:content';
 
@@ -14,7 +15,11 @@ export async function getStaticPaths() {
 
 const { article } = Astro.props;
 const { data } = article;
-const { Content } = await article.render();
+const { Content, headings } = await article.render();
+const minutes = readingTime(article.body);
+// Table of contents only pays off on long, sectioned posts.
+const toc = headings.filter((h) => h.depth === 2);
+const showToc = toc.length >= 3;
 ---
 
 <BaseLayout title={data.title} description={data.excerpt} image={data.featuredImage}>
@@ -25,7 +30,9 @@ const { Content } = await article.render();
       <div class="mt-4 flex flex-wrap items-center gap-4 text-sm text-coffee-600">
         <time datetime={data.publishedDate.toISOString()}>{formatDate(data.publishedDate)}</time>
         {data.author && <span>— {data.author}</span>}
+        <span>· {minutes} phút đọc</span>
       </div>
+      {data.excerpt && <p class="article-lead mt-6">{data.excerpt}</p>}
     </header>
 
     <div class="overflow-hidden rounded-xl bg-coffee-100">
@@ -37,6 +44,17 @@ const { Content } = await article.render();
         height="450"
       />
     </div>
+
+    {showToc && (
+      <nav aria-label="Mục lục" class="mt-8 rounded-xl border border-coffee-200 bg-white px-5 py-4">
+        <p class="font-serif text-lg font-bold text-coffee-900">Nội dung bài viết</p>
+        <ol class="mt-3 list-decimal space-y-1.5 pl-5 text-coffee-700 marker:text-leaf-700">
+          {toc.map((h) => (
+            <li><a href={`#${h.slug}`} class="hover:text-ripe-600 hover:underline">{h.text}</a></li>
+          ))}
+        </ol>
+      </nav>
+    )}
 
     <div class="mt-8 prose prose-coffee max-w-none">
       <Content />
