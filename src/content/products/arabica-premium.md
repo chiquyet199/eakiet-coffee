@@ -1,10 +1,10 @@
 ---
 title: Cà phê Arabica Premium
-price: 500000
-currency: VND
 productLine: roasted
 beanType: arabica
 processMethod: washed
+price: 500000
+currency: VND
 featured: true
 published: true
 mainImage: /images/uploads/what-is-moving-average.jpg
@@ -30,5 +30,6 @@ order: 0
 createdAt: 2026-02-01T00:00:00.000Z
 updatedAt: 2026-02-05T00:00:00.000Z
 ---
-
 Nội dung mô tả chi tiết sản phẩm có thể viết tại đây (Markdown).
+
+<div class="embed-video" data-url="https://www.youtube.com/watch?v=UFniC4RG-Yo"><iframe src="https://www.youtube-nocookie.com/embed/UFniC4RG-Yo" title="Test" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
